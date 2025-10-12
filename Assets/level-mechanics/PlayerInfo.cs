@@ -20,27 +20,26 @@ public class PlayerInfo : MonoBehaviour
 
     void Awake()
     {
-        // Singleton setup
+        // Singleton
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject); // persistent?
         }
         else
         {
             Destroy(gameObject);
+            return;
         }
+        OnHealthChanged ??= new UnityEvent<int>();
+        OnScoreChanged ??= new UnityEvent<int>();
+        OnDeath ??= new UnityEvent();
+        currentHealth = maxHealth;
     }
 
     void Start()
     {
-        currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth);
         OnScoreChanged?.Invoke(score);
-    }
-
-    void Update()
-    {
     }
 
     public void TakeDamage(int damage)
@@ -48,22 +47,24 @@ public class PlayerInfo : MonoBehaviour
         if (currentHealth <= 0) return;
 
         currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0); 
+        currentHealth = Mathf.Max(currentHealth, 0);
         OnHealthChanged?.Invoke(currentHealth);
 
         if (currentHealth <= 0)
         {
             Die();
         }
+        Debug.Log($"Health: {currentHealth}");
     }
 
     public void Heal(int amount)
     {
-        if (currentHealth <= 0) return; // Can't heal if dead
+        if (currentHealth <= 0) return;
 
         currentHealth += amount;
-        currentHealth = Mathf.Min(currentHealth, maxHealth); 
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
         OnHealthChanged?.Invoke(currentHealth);
+        Debug.Log($"Health: {currentHealth}");
     }
 
     public void AddScore(int amount)
@@ -73,12 +74,13 @@ public class PlayerInfo : MonoBehaviour
         Debug.Log($"Score: {score}");
     }
 
-    void Die()
+    private void Die()
     {
         Debug.Log("Player died");
         OnDeath?.Invoke();
     }
 
+    // helper methods
     public int GetCurrentHealth() => currentHealth;
     public int GetMaxHealth() => maxHealth;
     public int GetScore() => score;
