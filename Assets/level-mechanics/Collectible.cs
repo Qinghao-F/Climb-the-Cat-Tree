@@ -50,9 +50,12 @@ public class Collectible : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(collectSound, transform.position);
             }
-            
+
             // Log for debugging
             Debug.Log($"Collected cheese! Value: {value}");
+            
+            // UI part: cheese counter
+            CheeseUI.Instance?.Add(1);
             
             // Destroy the cheese after short delay
             Destroy(gameObject, destroyDelay);
