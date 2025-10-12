@@ -1,0 +1,26 @@
+{
+  "repoUrl": "https://github.com/feit-comp30019/2025s2-project-2-fox-fish",
+  "teamName": "Fox and Fish",
+  "teamMembers": [
+    {
+      "name": "Emily Wu",
+      "github": "emiwooo",
+      "email": "emily.wu2@student.unimelb.edu.au"
+    },
+    {
+      "name": "Xinyu Zhang",
+      "github": "XZZ8",
+      "email": "zxx8@student.unimelb.edu.au"
+    },
+    {
+      "name": "Qinghao Fang",
+      "github": "Qinghao-F",
+      "email": "qinghao.fang@student.unimelb.edu.au"
+    },
+    {
+      "name": "Cindy Qian",
+      "github": "Schwabll",
+      "email": "Cindyq@student.unimelb.edu.au"
+    }
+  ]
+}
