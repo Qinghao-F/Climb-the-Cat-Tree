@@ -4,17 +4,15 @@ using System.Collections;
 public class CatPawSwipe : MonoBehaviour
 {
     [Header("Swipe Settings")]
-    public float swipeInSpeed = 50f; // Fast swipe in
-    public float swipeOutSpeed = 10f; // Slow retreat
+    public float swipeInSpeed = 50f;
+    public float swipeOutSpeed = 10f;
     public float swipeDistance = 15f;
     public float swipeInterval = 3f; // Time between swipes
     public float upwardAngle = 30f; // Diagonal upward angle in degrees
     
     [Header("Warning Animation")]
     public float warningTime = 1f; // Warning before swipe
-    public WarningType warningAnimation = WarningType.Flash;
     public float flashSpeed = 10f; // For flash animation
-    public float shakeIntensity = 0.2f; // For shake animation
     
     [Header("Damage Settings")]
     public int damage = 10;
@@ -31,14 +29,6 @@ public class CatPawSwipe : MonoBehaviour
     {
         FromLeft,
         FromRight
-    }
-    
-    public enum WarningType
-    {
-        Flash,          // Paw flashes in/out
-        Shake,          // Paw shakes at edge
-        SlowReveal,     // Paw slowly peeks out
-        Pulse           // Paw pulses/scales
     }
     
     void Start()
@@ -84,7 +74,7 @@ public class CatPawSwipe : MonoBehaviour
         {
             // Wait before next attack
             yield return new WaitForSeconds(swipeInterval);
-            
+
             // Warning animation
             yield return StartCoroutine(PlayWarningAnimation());
             
@@ -102,73 +92,31 @@ public class CatPawSwipe : MonoBehaviour
     IEnumerator PlayWarningAnimation()
     {
         float elapsed = 0f;
-        
-        switch (warningAnimation)
+        Vector3 startPos = offScreenPosition;
+        Vector3 endPos = warningPosition;
+
+        while (elapsed < warningTime)
         {
-            case WarningType.Flash:
-                // Flash paw in and out rapidly
-                while (elapsed < warningTime)
-                {
-                    float alpha = Mathf.PingPong(Time.time * flashSpeed, 1f);
-                    Color c = spriteRenderer.color;
-                    c.a = alpha;
-                    spriteRenderer.color = c;
-                    
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
-                // Reset to full opacity
-                Color resetColor = spriteRenderer.color;
-                resetColor.a = 1f;
-                spriteRenderer.color = resetColor;
-                break;
-                
-            case WarningType.Shake:
-                // Shake at edge of screen
-                transform.position = warningPosition;
-                while (elapsed < warningTime)
-                {
-                    Vector3 shake = new Vector3(
-                        Random.Range(-shakeIntensity, shakeIntensity),
-                        Random.Range(-shakeIntensity, shakeIntensity),
-                        0
-                    );
-                    transform.position = warningPosition + shake;
-                    
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
-                transform.position = offScreenPosition;
-                break;
-                
-            case WarningType.SlowReveal:
-                // Slowly peek out from edge
-                while (elapsed < warningTime)
-                {
-                    float t = elapsed / warningTime;
-                    transform.position = Vector3.Lerp(offScreenPosition, warningPosition, t);
-                    
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
-                // Move back off screen quickly
-                transform.position = offScreenPosition;
-                break;
-                
-            case WarningType.Pulse:
-                // Scale up and down
-                Vector3 originalScale = transform.localScale;
-                while (elapsed < warningTime)
-                {
-                    float scale = 1f + Mathf.Sin(Time.time * flashSpeed) * 0.3f;
-                    transform.localScale = originalScale * scale;
-                    
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
-                transform.localScale = originalScale;
-                break;
+            float t = elapsed / warningTime;
+            
+            // Slowly move toward warning position
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+
+            // Flash the sprite transparency
+            float alpha = Mathf.PingPong(Time.time * flashSpeed, 1.5f);
+            Color c = spriteRenderer.color;
+            c.a = alpha;
+            spriteRenderer.color = c;
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
+
+        // Reset everything at the end
+        transform.position = offScreenPosition;
+        Color resetColor = spriteRenderer.color;
+        resetColor.a = 1f;
+        spriteRenderer.color = resetColor;
     }
 
     IEnumerator SwipeIn()
