@@ -47,10 +47,16 @@ public class PlayerRopeClimb : MonoBehaviour
     private readonly List<Collider> playerCols = new();
     private readonly List<Collider> ropeCols   = new();
 
+    //animation
+    private Animator anim;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         GetComponentsInChildren(true, playerCols);
+
+        anim = GetComponentInChildren<Animator>();
+
     }
 
     void Start()
@@ -105,6 +111,19 @@ public class PlayerRopeClimb : MonoBehaviour
         if (Mathf.Abs(v) > 0.0001f)
             transform.position += Vector3.up * (v * climbSpeed * Time.fixedDeltaTime);
 
+        if (anim != null)
+        {
+            if (Mathf.Abs(v) > 0.01f)
+            {
+                anim.speed = 1f; // play animation normally
+            }
+            else
+            {
+                anim.speed = 0f; // pause on current frame
+            }
+
+        }
+
         // 3) jump off
         if (wantJump) ExitClimb(true);
     }
@@ -146,6 +165,12 @@ public class PlayerRopeClimb : MonoBehaviour
         if (holdJumpBooster) holdJumpBooster.enabled = false;
 
         isClimbing = true;
+
+        if (anim != null)
+        {
+            anim.SetBool("isClimbing", true);
+        }
+
         wantJump = false;
     }
 
@@ -176,6 +201,13 @@ public class PlayerRopeClimb : MonoBehaviour
         }
 
         isClimbing = false;
+
+        if (anim != null)
+        {
+            anim.SetBool("isClimbing", false);
+            //anim.SetTrigger("JumpOff"); // optional, if you want a jump animation
+        }
+
         wantJump = false;
         // keep currentRope for coroutine to finish ignore toggles
     }
