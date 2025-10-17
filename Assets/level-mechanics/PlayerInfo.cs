@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 public class PlayerInfo : MonoBehaviour
 {
+    private Animator anim;
+
     // Singleton instance
     public static PlayerInfo Instance;
 
@@ -20,6 +22,8 @@ public class PlayerInfo : MonoBehaviour
 
     void Awake()
     {
+        anim = GetComponentInChildren<Animator>();
+
         // Singleton
         if (Instance == null)
         {
@@ -49,6 +53,11 @@ public class PlayerInfo : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0);
         OnHealthChanged?.Invoke(currentHealth);
+
+        if (anim != null)
+        {
+            anim.SetTrigger("Hurt");
+        }
 
         if (currentHealth <= 0)
         {

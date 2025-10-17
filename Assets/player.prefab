@@ -157,7 +157,7 @@ MonoBehaviour:
   groundCheckRadius: 1
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   extraGravity: 150
   spriteTransform: {fileID: 6641172144545988939}
 --- !u!1 &3134683776982566671
