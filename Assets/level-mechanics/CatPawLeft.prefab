@@ -129,9 +129,7 @@ MonoBehaviour:
   swipeInterval: 3
   upwardAngle: 30
   warningTime: 1
-  warningAnimation: 1
   flashSpeed: 10
-  shakeIntensity: 0.2
   damage: 1
   direction: 0
 --- !u!54 &7893789279702604268
