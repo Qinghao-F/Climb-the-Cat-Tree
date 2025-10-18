@@ -3460,7 +3460,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.5
+    m_Strength: 0.15
     m_Bias: 2
     m_NormalBias: 3
     m_NearPlane: 0.2
@@ -3785,13 +3785,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   climbSpeed: 6
-  jumpOffForce: 6
-  xzSnapStrength: 1
-  sideOffset: 0.25
+  extraSidePadding: 0.06
   sideBlendSpeed: 10
+  sideSwitchDuration: 0.15
+  ignoreCollisionTime: 0.2
+  jumpOffForce: 6
   jumpDirectionLocal: {x: 0, y: 1, z: 0.75}
-  postJumpNoCollideTime: 0.25
   outwardNudge: 0.12
+  postJumpNoCollideTime: 0.25
+  faceModeWhileClimbing: 0
+  spriteFacesRightByDefault: 1
+  entryFacingHoldTime: 0.12
   holdJumpBooster: {fileID: 0}
 --- !u!1001 &770948406
 PrefabInstance:
@@ -7574,7 +7578,7 @@ Transform:
   m_GameObject: {fileID: 1621217683}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.7, y: 384.63, z: 274.3}
+  m_LocalPosition: {x: 153, y: 384.63, z: 274.3}
   m_LocalScale: {x: 15.859999, y: 15.859999, z: 15.859999}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -9257,8 +9261,8 @@ Transform:
   m_GameObject: {fileID: 1980493887}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2, y: 228.7, z: 280.7}
-  m_LocalScale: {x: 10.8, y: 500, z: 143.97299}
+  m_LocalPosition: {x: 2, y: 361, z: 280.7}
+  m_LocalScale: {x: 10.8, y: 800, z: 143.97299}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: pillar
-  m_Shader: {fileID: 4800000, guid: 26bb93af9dd0a447bb0e25ace2915767, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5be5103613668499cb9ef7c329475fcf, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -66,6 +66,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClipping: 0
     - _Amp: 0.5
     - _BumpScale: 0.2
     - _Cull: 2
@@ -83,6 +84,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _OutlineWidth: 6
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecSteps: 2
@@ -90,10 +92,12 @@ Material:
     - _Speed: 2
     - _SrcBlend: 1
     - _UVSec: 0
+    - _ZOffset: 0.1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.54901963, g: 0.7254902, b: 0.72156864, a: 1}
     - _Color: {r: 0.54901963, g: 0.7254902, b: 0.72156864, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
