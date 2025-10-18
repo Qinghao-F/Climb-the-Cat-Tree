@@ -40,6 +40,8 @@ public class PlayerRopeClimb : MonoBehaviour
     int targetSide;
     Vector3 currentXZ, desiredXZ, crossStartPos, crossEndPos;
 
+    private Animator anim;
+
     bool savedUseGravity, savedIsKinematic;
     RigidbodyConstraints savedConstraints;
     SpriteRenderer sr;
@@ -57,6 +59,9 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         sr = GetComponentInChildren<SpriteRenderer>();
+
+        anim = GetComponentInChildren<Animator>();
+
         playerCols.AddRange(GetComponentsInChildren<Collider>(true));
     }
 
@@ -131,11 +136,30 @@ public class PlayerRopeClimb : MonoBehaviour
         float v = Input.GetAxis("Vertical");
         if (Mathf.Abs(v) > 0.001f)
             transform.position += Vector3.up * (v * climbSpeed * Time.fixedDeltaTime);
+        
+        // --- Control climbing animation speed ---
+        if (anim)
+        {
+            if (Mathf.Abs(v) > 0.001f)
+            {
+                // Player is moving — play animation normally
+                anim.speed = 1f;
+            }
+            else
+            {
+                // Player is stationary — freeze animation on current frame
+                anim.speed = 0f;
+            }
+        }
+
 
         // Jump or flip after facing hold expires
         if (wantJump) ExitClimb(true);
         if (Time.time >= facingHoldEndTime) facingHoldActive = false;
-        if (!facingHoldActive) FaceWhileClimbing();
+
+        // Always face rope even while switching
+        FaceWhileClimbing();
+
     }
 
     // === Enter climbing mode when touching rope ===
@@ -186,6 +210,9 @@ public class PlayerRopeClimb : MonoBehaviour
         isClimbing = true;
         wantJump = false;
         isSwitching = false;
+
+        if (anim) anim.SetBool("isClimbing", true);
+
     }
 
     // === Exit climbing mode ===
@@ -216,6 +243,11 @@ public class PlayerRopeClimb : MonoBehaviour
         wantJump = false;
         isSwitching = false;
         facingHoldActive = false;
+
+        if (anim) anim.SetBool("isClimbing", false);
+        if (anim) anim.speed = 1f; // restore normal playback speed
+
+
     }
 
     // === Switch sides around rope ===
@@ -235,6 +267,7 @@ public class PlayerRopeClimb : MonoBehaviour
 
         StartCoroutine(TemporarilyIgnoreRope(ignoreCollisionTime));
         gripSide = desiredSide;
+        FaceWhileClimbing(); // instantly face the rope
     }
 
     // === Maintain side position ===
@@ -247,13 +280,15 @@ public class PlayerRopeClimb : MonoBehaviour
     // === Handle facing direction while on rope ===
     void FaceWhileClimbing()
     {
-        if (!isClimbing || sr == null) return;
+        if (!isClimbing || sr == null || currentRope == null) return;
 
-        bool wantFaceRight = faceModeWhileClimbing == ClimbFacingMode.Centre
-            ? (ropeAxisWorld.x > transform.position.x)
-            : (gripSide == +1);
+        // Always face toward the rope's x-position
+        bool wantFaceRight = (ropeAxisWorld.x > transform.position.x);
 
-        if (!spriteFacesRightByDefault) wantFaceRight = !wantFaceRight;
+        // Adjust if your sprite faces left by default
+        if (!spriteFacesRightByDefault)
+            wantFaceRight = !wantFaceRight;
+
         sr.flipX = !wantFaceRight;
     }
 
