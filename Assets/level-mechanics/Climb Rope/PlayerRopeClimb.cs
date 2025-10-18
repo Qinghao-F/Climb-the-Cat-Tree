@@ -3,60 +3,61 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Player rope climbing (Space-only exit) with a short post-jump no-collision window.
-/// - Touch RopeMarker trigger -> enter climb mode (RB kinematic, gravity off, snap beside rope).
-/// - While climbing -> only Vertical input; Left/Right switches the hanging side.
-/// - Press Space -> jump off forward+up, nudge outward, and temporarily ignore
-///   collisions with the rope to avoid getting stuck.
-/// Unity 6 safe: never sets velocity while RB is kinematic.
+/// Rope Climbing Controller (Symmetric Final Version)
+/// Supports left/right symmetry, short entry-facing hold, and full recovery after climbing.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerRopeClimb : MonoBehaviour
 {
-    [Header("Climb")]
-    [Min(0f)] public float climbSpeed = 2.5f;
-    [Min(0f)] public float jumpOffForce = 6f;
-    [Range(0f, 1f)] public float xzSnapStrength = 1f;
-
-    [Header("Grip Offset")]
-    [Min(0f)] public float sideOffset = 0.25f;                 // hang beside the rope
-    [Range(0.01f, 20f)] public float sideBlendSpeed = 10f;     // side switch smoothness
-
-    [Header("Jump Direction")]
+    // === Basic climbing and jump settings ===
+    public float climbSpeed = 2.8f;                  // Vertical climbing speed
+    public float extraSidePadding = 0.06f;           // Offset from rope centre
+    public float sideBlendSpeed = 12f;               // Side smoothing
+    public float sideSwitchDuration = 0.15f;         // Time to cross rope
+    public float ignoreCollisionTime = 0.20f;        // Collision ignore during cross
+    public float jumpOffForce = 6f;                  // Jump impulse
     public Vector3 jumpDirectionLocal = new Vector3(0f, 1f, 0.75f);
+    public float outwardNudge = 0.12f;               // Push away from rope
+    public float postJumpNoCollideTime = 0.25f;      // Ignore collisions after jump
 
-    [Header("Post-jump Unstick")]
-    [Min(0f)] public float postJumpNoCollideTime = 0.25f;      // seconds
-    [Min(0f)] public float outwardNudge = 0.12f;               // metres
+    // === Facing mode control ===
+    public enum ClimbFacingMode { Centre, SideOut }
+    public ClimbFacingMode faceModeWhileClimbing = ClimbFacingMode.Centre; // Face rope or outward
+    public bool spriteFacesRightByDefault = true;
+    public float entryFacingHoldTime = 0.12f;        // Preserve entry-facing
+    public Behaviour holdJumpBooster;                // Optional external jump controller
 
-    [Header("Optional Booster")]
-    public Behaviour holdJumpBooster; // e.g. HoldJumpBooster (will be disabled while climbing)
+    // === Internal states ===
+    Rigidbody rb;
+    bool isClimbing, wantJump;
+    Transform currentRope;
+    Collider ropeMainCol;
+    Vector3 ropeAxisWorld;
+    float safeSideDistance;
+    int gripSide = +1;                               // +1=right, -1=left
+    bool isSwitching;
+    float switchT;
+    int targetSide;
+    Vector3 currentXZ, desiredXZ, crossStartPos, crossEndPos;
 
-    // runtime
-    private Rigidbody rb;
-    private bool isClimbing, wantJump;
-    private Transform currentRope;
-    private Vector3 ropeAxisXZ, desiredSnapXZ, currentSnapXZ;
-    private int gripSide = +1; // -1 left, +1 right
+    bool savedUseGravity, savedIsKinematic;
+    RigidbodyConstraints savedConstraints;
+    SpriteRenderer sr;
+    bool hadSpriteAtEntry;
+    bool savedFlipX;
 
-    // saved physics
-    private bool savedUseGravity, savedIsKinematic;
-    private RigidbodyConstraints savedConstraints;
+    bool facingHoldActive;
+    float facingHoldEndTime;
 
-    // colliders cache for ignore-collision
-    private readonly List<Collider> playerCols = new();
-    private readonly List<Collider> ropeCols   = new();
+    readonly List<Collider> playerCols = new();
+    readonly List<Collider> ropeCols = new();
 
-    //animation
-    private Animator anim;
-
+    // === Initial setup ===
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        GetComponentsInChildren(true, playerCols);
-
-        anim = GetComponentInChildren<Animator>();
-
+        sr = GetComponentInChildren<SpriteRenderer>();
+        playerCols.AddRange(GetComponentsInChildren<Collider>(true));
     }
 
     void Start()
@@ -68,9 +69,9 @@ public class PlayerRopeClimb : MonoBehaviour
         }
     }
 
-    // -------- marker-driven detection --------
-    void OnTriggerEnter(Collider other) { TryBegin(other); }
-    void OnTriggerStay(Collider other)  { if (!isClimbing) TryBegin(other); }
+    // === Detect rope contact and exit ===
+    void OnTriggerEnter(Collider other) => TryBegin(other);
+    void OnTriggerStay(Collider other) { if (!isClimbing) TryBegin(other); }
     void OnTriggerExit(Collider other)
     {
         if (!isClimbing || currentRope == null) return;
@@ -78,143 +79,193 @@ public class PlayerRopeClimb : MonoBehaviour
             ExitClimb(false);
     }
 
+    // === Handle input during climbing ===
     void Update()
     {
         if (!isClimbing) return;
 
         if (Input.GetKeyDown(KeyCode.Space)) wantJump = true;
 
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) gripSide = +1;
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))  gripSide = -1;
+        // Horizontal keys decide rope side
+        float h = Input.GetAxisRaw("Horizontal");
+        int desiredSide = (h > 0.1f) ? +1 : (h < -0.1f ? -1 : 0);
+
+        if (desiredSide != 0 && !isSwitching && desiredSide != gripSide)
+        {
+            facingHoldActive = false;
+            BeginSideSwitch(desiredSide);
+        }
     }
 
+    // === Physics and vertical movement ===
     void FixedUpdate()
     {
         if (!isClimbing) return;
 
-        Vector3 ropeRight = currentRope ? currentRope.right : Vector3.right;
-        Vector3 offsetXZ  = new Vector3(ropeRight.x, 0f, ropeRight.z).normalized * (sideOffset * gripSide);
-        desiredSnapXZ     = ropeAxisXZ + offsetXZ;
-
-        currentSnapXZ = Vector3.Lerp(
-            currentSnapXZ, desiredSnapXZ,
-            1f - Mathf.Exp(-sideBlendSpeed * Time.fixedDeltaTime)
-        );
-
-        // 1) stick to rope XZ
-        Vector3 p = transform.position;
-        Vector3 target = new Vector3(currentSnapXZ.x, p.y, currentSnapXZ.z);
-        transform.position = Vector3.Lerp(p, target, Mathf.Clamp01(xzSnapStrength));
-
-        // 2) vertical-only motion
-        float v = Input.GetAxis("Vertical");
-        if (Mathf.Abs(v) > 0.0001f)
-            transform.position += Vector3.up * (v * climbSpeed * Time.fixedDeltaTime);
-
-        if (anim != null)
+        // Find rope axis by closest point
+        if (ropeMainCol)
         {
-            if (Mathf.Abs(v) > 0.01f)
-            {
-                anim.speed = 1f; // play animation normally
-            }
-            else
-            {
-                anim.speed = 0f; // pause on current frame
-            }
-
+            Vector3 closest = ropeMainCol.ClosestPoint(transform.position);
+            ropeAxisWorld = new Vector3(closest.x, currentRope.position.y, closest.z);
         }
 
-        // 3) jump off
+        Vector3 rightXZ = RopeRightXZ(currentRope);
+        Vector3 axisXZ = new Vector3(ropeAxisWorld.x, 0f, ropeAxisWorld.z);
+        desiredXZ = axisXZ + rightXZ * (safeSideDistance * gripSide);
+
+        // Move to side or cross rope
+        if (isSwitching)
+        {
+            switchT += Time.fixedDeltaTime / Mathf.Max(0.01f, sideSwitchDuration);
+            float t = Mathf.SmoothStep(0f, 1f, switchT);
+            transform.position = Vector3.Lerp(crossStartPos, crossEndPos, t);
+            if (switchT >= 1f) { isSwitching = false; gripSide = targetSide; }
+        }
+        else
+        {
+            currentXZ = Vector3.Lerp(currentXZ, desiredXZ, 1f - Mathf.Exp(-sideBlendSpeed * Time.fixedDeltaTime));
+            StickToXZ(currentXZ);
+        }
+
+        // Climb up or down
+        float v = Input.GetAxis("Vertical");
+        if (Mathf.Abs(v) > 0.001f)
+            transform.position += Vector3.up * (v * climbSpeed * Time.fixedDeltaTime);
+
+        // Jump or flip after facing hold expires
         if (wantJump) ExitClimb(true);
+        if (Time.time >= facingHoldEndTime) facingHoldActive = false;
+        if (!facingHoldActive) FaceWhileClimbing();
     }
 
-    // -------------- enter / exit --------------
-
-    private void TryBegin(Collider other)
+    // === Enter climbing mode when touching rope ===
+    void TryBegin(Collider other)
     {
         var marker = other.GetComponentInParent<RopeMarker>();
         if (marker == null || isClimbing) return;
 
         currentRope = marker.transform;
+        ropeMainCol = other ? other : currentRope.GetComponentInChildren<Collider>();
 
-        // save physics
-        savedUseGravity  = rb.useGravity;
+        // Disable gravity for controlled climbing
+        savedUseGravity = rb.useGravity;
         savedIsKinematic = rb.isKinematic;
         savedConstraints = rb.constraints;
-
-        // stop motion BEFORE making kinematic
         rb.useGravity = false;
-        SafeZeroVelocity();              // <<< never writes when kinematic
-
-        // take over
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        SafeZeroVelocity();
 
-        // rope axis (world XZ)
-        Vector3 axis = currentRope.position;
-        if (axis == Vector3.zero && other != null) axis = other.bounds.center;
-        ropeAxisXZ = new Vector3(axis.x, 0f, axis.z);
+        // Find contact axis and safe offset
+        Vector3 closest = ropeMainCol ? ropeMainCol.ClosestPoint(transform.position) : currentRope.position;
+        ropeAxisWorld = new Vector3(closest.x, currentRope.position.y, closest.z);
+        float approxRadius = ropeMainCol ? Mathf.Max(ropeMainCol.bounds.extents.x, ropeMainCol.bounds.extents.z) : 0.05f;
+        safeSideDistance = approxRadius + extraSidePadding;
 
-        // initialise snap & hard stick once
-        currentSnapXZ = new Vector3(transform.position.x, 0f, transform.position.z);
-        Vector3 rRightXZ = new Vector3(currentRope.right.x, 0f, currentRope.right.z).normalized;
-        desiredSnapXZ = ropeAxisXZ + rRightXZ * (sideOffset * gripSide);
-        transform.position = new Vector3(desiredSnapXZ.x, transform.position.y, desiredSnapXZ.z);
+        // Determine which side player touched
+        Vector3 rightXZ = RopeRightXZ(currentRope);
+        Vector3 axisXZ = new Vector3(ropeAxisWorld.x, 0f, ropeAxisWorld.z);
+        Vector3 toPlayerXZ = new Vector3(transform.position.x - axisXZ.x, 0f, transform.position.z - axisXZ.z);
+        float dot = Vector3.Dot(toPlayerXZ, rightXZ);
+        if (Mathf.Abs(dot) < 1e-4f) dot = (transform.position.x - axisXZ.x) >= 0f ? +1f : -1f;
+        gripSide = (dot >= 0f) ? +1 : -1;
 
-        // pause booster
+        // Snap to correct side on contact
+        Vector3 snapXZ = axisXZ + rightXZ * (safeSideDistance * gripSide);
+        currentXZ = snapXZ;
+        transform.position = new Vector3(snapXZ.x, transform.position.y, snapXZ.z);
+
+        // Save facing before rope, activate hold window
+        hadSpriteAtEntry = sr != null;
+        if (hadSpriteAtEntry) savedFlipX = sr.flipX;
+        facingHoldActive = entryFacingHoldTime > 0f;
+        facingHoldEndTime = Time.time + entryFacingHoldTime;
+
         if (holdJumpBooster) holdJumpBooster.enabled = false;
 
         isClimbing = true;
-
-        if (anim != null)
-        {
-            anim.SetBool("isClimbing", true);
-        }
-
         wantJump = false;
+        isSwitching = false;
     }
 
-    private void ExitClimb(bool withImpulse)
+    // === Exit climbing mode ===
+    void ExitClimb(bool withImpulse)
     {
-        // outward direction from rope to player (XZ)
-        Vector3 outwardXZ = (currentSnapXZ - ropeAxisXZ);
-        if (outwardXZ.sqrMagnitude < 1e-6f) outwardXZ = Vector3.right;
-        outwardXZ.y = 0f; outwardXZ.Normalize();
+        Vector3 outwardXZ = (new Vector3(transform.position.x, 0f, transform.position.z)
+            - new Vector3(ropeAxisWorld.x, 0f, ropeAxisWorld.z)).normalized;
 
-        // restore physics first
         rb.isKinematic = savedIsKinematic;
-        rb.useGravity  = savedUseGravity;
+        rb.useGravity = savedUseGravity;
         rb.constraints = savedConstraints;
 
-        // resume booster
         if (holdJumpBooster) holdJumpBooster.enabled = true;
 
+        // Apply jump when leaving rope
         if (withImpulse)
         {
-            SafeZeroVelocity();                         // <<< now dynamic, safe to zero
+            SafeZeroVelocity();
             transform.position += outwardXZ * outwardNudge;
-
             Vector3 dir = transform.TransformDirection(jumpDirectionLocal.normalized);
             rb.AddForce(dir * jumpOffForce, ForceMode.VelocityChange);
-
             StartCoroutine(TemporarilyIgnoreRope(postJumpNoCollideTime));
         }
 
+        // Restore facing and reset state
+        if (hadSpriteAtEntry && sr != null) sr.flipX = savedFlipX;
         isClimbing = false;
-
-        if (anim != null)
-        {
-            anim.SetBool("isClimbing", false);
-            //anim.SetTrigger("JumpOff"); // optional, if you want a jump animation
-        }
-
         wantJump = false;
-        // keep currentRope for coroutine to finish ignore toggles
+        isSwitching = false;
+        facingHoldActive = false;
     }
 
-    // ---- helpers ----
+    // === Switch sides around rope ===
+    void BeginSideSwitch(int desiredSide)
+    {
+        Vector3 rightXZ = RopeRightXZ(currentRope);
+        Vector3 axisXZ = new Vector3(ropeAxisWorld.x, 0f, ropeAxisWorld.z);
+        Vector3 endXZ = axisXZ + rightXZ * (safeSideDistance * desiredSide);
 
-    private void SafeZeroVelocity()
+        crossStartPos = transform.position;
+        crossEndPos = new Vector3(endXZ.x, transform.position.y, endXZ.z);
+
+        isSwitching = true;
+        switchT = 0f;
+        targetSide = desiredSide;
+        facingHoldActive = false;
+
+        StartCoroutine(TemporarilyIgnoreRope(ignoreCollisionTime));
+        gripSide = desiredSide;
+    }
+
+    // === Maintain side position ===
+    void StickToXZ(Vector3 xz)
+    {
+        Vector3 p = transform.position;
+        transform.position = new Vector3(xz.x, p.y, xz.z);
+    }
+
+    // === Handle facing direction while on rope ===
+    void FaceWhileClimbing()
+    {
+        if (!isClimbing || sr == null) return;
+
+        bool wantFaceRight = faceModeWhileClimbing == ClimbFacingMode.Centre
+            ? (ropeAxisWorld.x > transform.position.x)
+            : (gripSide == +1);
+
+        if (!spriteFacesRightByDefault) wantFaceRight = !wantFaceRight;
+        sr.flipX = !wantFaceRight;
+    }
+
+    // === Utility functions ===
+    static Vector3 RopeRightXZ(Transform rope)
+    {
+        Vector3 r = rope ? rope.right : Vector3.right;
+        Vector3 xz = new Vector3(r.x, 0f, r.z);
+        return (xz.sqrMagnitude < 1e-6f) ? Vector3.right : xz.normalized;
+    }
+
+    void SafeZeroVelocity()
     {
 #if UNITY_6000_0_OR_NEWER
         if (!rb.isKinematic) rb.linearVelocity = Vector3.zero;
@@ -223,16 +274,12 @@ public class PlayerRopeClimb : MonoBehaviour
 #endif
     }
 
-    private IEnumerator TemporarilyIgnoreRope(float seconds)
+    IEnumerator TemporarilyIgnoreRope(float seconds)
     {
-        if (currentRope == null || seconds <= 0f) { currentRope = null; yield break; }
-
+        if (currentRope == null || seconds <= 0f) yield break;
         ropeCols.Clear();
         currentRope.GetComponentsInChildren(true, ropeCols);
-        if (ropeCols.Count == 0) { currentRope = null; yield break; }
-
-        playerCols.Clear();
-        GetComponentsInChildren(true, playerCols);
+        if (ropeCols.Count == 0) yield break;
 
         foreach (var pc in playerCols)
             if (pc && pc.enabled)
@@ -240,15 +287,12 @@ public class PlayerRopeClimb : MonoBehaviour
                     if (rc && rc.enabled)
                         Physics.IgnoreCollision(pc, rc, true);
 
-        float t0 = Time.unscaledTime;
-        while (Time.unscaledTime - t0 < seconds) yield return null;
+        yield return new WaitForSeconds(seconds);
 
         foreach (var pc in playerCols)
             if (pc)
                 foreach (var rc in ropeCols)
                     if (rc)
                         Physics.IgnoreCollision(pc, rc, false);
-
-        currentRope = null; // fully detached
     }
 }
