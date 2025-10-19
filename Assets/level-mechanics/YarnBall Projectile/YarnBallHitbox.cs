@@ -8,16 +8,23 @@ public class YarnBallHitbox : MonoBehaviour
 {
     [Tooltip("Damage dealt to the player on touch.")]
     public int damage = 1;
-
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        var hp = other.GetComponent<PlayerHealth>();
-        if (hp != null)
+        if (other.CompareTag("Player"))
         {
-            hp.TakeDamage(damage);
-            // Optional: the ball could continue or be removed on hit. We keep it simple: continue flying.
-            // If you prefer to remove on hit, uncomment the next line:
-            // Destroy(gameObject);
+            PlayerInfo playerInfo = other.GetComponent<PlayerInfo>();
+            if (playerInfo != null)
+            {
+                playerInfo.TakeDamage(damage);
+                Debug.Log($"Yarn Ball hit player for {damage} damage");
+                
+                // temp solution until I figure out event driven method?
+                HealthUI.Instance?.Damage(damage);
+            }
+            else
+            {
+                Debug.LogError("Player has no PlayerInfo component");
+            }
         }
     }
 }
