@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Collectible : MonoBehaviour
+public class CollectibleHealth : MonoBehaviour
 {
     [Header("Collectible Settings")]
     [SerializeField] private int value = 1;
@@ -11,7 +11,7 @@ public class Collectible : MonoBehaviour
     [SerializeField] private float bobSpeed = 1f;
     
     [Header("Effects")]
-    [SerializeField] private GameObject collectVFX; 
+    [SerializeField] private GameObject collectVFX;
     [SerializeField] private AudioClip collectSound;
     [SerializeField] private float destroyDelay = 0.1f;
 
@@ -36,28 +36,34 @@ public class Collectible : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Add score to player
-            PlayerInfo.Instance?.AddScore(value);
+            // Add health to player
+            if (other.CompareTag("Player"))
+        {
+            PlayerInfo playerInfo = other.GetComponent<PlayerInfo>();
+            if (playerInfo != null)
+            {
+                playerInfo.Heal(value);
+                Debug.Log($"Health pickup healed player for {value} health!");
+            }
+            else
+            {
+                Debug.LogError("Player has no PlayerInfo component");
+            }
+            }
             
             // Spawn VFX at cheese position
             if (collectVFX != null)
             {
                 Instantiate(collectVFX, transform.position, Quaternion.identity);
             }
-            
+
             // Play sound effect
             if (collectSound != null)
             {
                 AudioSource.PlayClipAtPoint(collectSound, transform.position);
             }
-
-            // Log for debugging
-            Debug.Log($"Collected cheese! Value: {value}");
             
-            // UI part: cheese counter
-            CheeseUI.Instance?.Add(1);
-            
-            // Destroy the cheese after short delay
+            // Destroy the pickup after short delay
             Destroy(gameObject, destroyDelay);
         }
     }

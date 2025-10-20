@@ -217,12 +217,11 @@ public class CatPawSwipe : MonoBehaviour
         
         if (other.CompareTag("Player"))
         {
-            // Damage player - PlayerInfo will fire OnHealthChanged event automatically
             PlayerInfo playerInfo = other.GetComponent<PlayerInfo>();
             if (playerInfo != null)
             {
                 playerInfo.TakeDamage(damage);
-                Debug.Log($"✓ Cat paw hit player for {damage} damage!");
+                Debug.Log($"Cat paw hit player for {damage} damage!");
             }
             else
             {
