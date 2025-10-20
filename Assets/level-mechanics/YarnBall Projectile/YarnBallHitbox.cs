@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Minimal hitbox: on touching something that has a PlayerHealth component,
+/// Minimal hitbox: on touching something that has a PlayerInfo component,
 /// calls TakeDamage once. Keeps out of the way of general physics.
 /// </summary>
 public class YarnBallHitbox : MonoBehaviour
@@ -17,9 +17,6 @@ public class YarnBallHitbox : MonoBehaviour
             {
                 playerInfo.TakeDamage(damage);
                 Debug.Log($"Yarn Ball hit player for {damage} damage");
-                
-                // temp solution until I figure out event driven method?
-                HealthUI.Instance?.Damage(damage);
             }
             else
             {

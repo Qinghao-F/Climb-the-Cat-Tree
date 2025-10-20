@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 public class PlayerInfo : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class PlayerInfo : MonoBehaviour
     [Header("Health Settings")]
     [SerializeField] private int maxHealth = 3;
     private int currentHealth;
+
+    [Header("Invincibility Settings")]
+    [SerializeField] private float invincibilityDuration = 1.5f;
+    private bool isInvincible = false;
 
     [Header("Score Settings")]
     private int score = 0;
@@ -34,6 +39,7 @@ public class PlayerInfo : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         OnHealthChanged ??= new UnityEvent<int>();
         OnScoreChanged ??= new UnityEvent<int>();
         OnDeath ??= new UnityEvent();
@@ -48,12 +54,18 @@ public class PlayerInfo : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (currentHealth <= 0) return;
+        // Don't take damage if invincible or already dead
+        if (isInvincible || currentHealth <= 0)
+        {
+            Debug.Log("Player is invincible or dead - no damage taken");
+            return;
+        }
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0);
         OnHealthChanged?.Invoke(currentHealth);
 
+        // Play hurt animation
         if (anim != null)
         {
             anim.SetTrigger("Hurt");
@@ -63,7 +75,25 @@ public class PlayerInfo : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            // Activate invincibility frames
+            StartCoroutine(BecomeInvincible());
+        }
+
         Debug.Log($"Health: {currentHealth}");
+    }
+
+    IEnumerator BecomeInvincible()
+    {
+        isInvincible = true;
+        Debug.Log("Invincibility started");
+
+        // Wait for invincibility duration
+        yield return new WaitForSeconds(invincibilityDuration);
+
+        isInvincible = false;
+        Debug.Log("Invincibility ended");
     }
 
     public void Heal(int amount)
@@ -86,13 +116,15 @@ public class PlayerInfo : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died");
+        isInvincible = true; // Prevent multiple death calls
         OnDeath?.Invoke();
     }
 
-    // helper methods
+    // Helper methods
     public int GetCurrentHealth() => currentHealth;
     public int GetMaxHealth() => maxHealth;
     public int GetScore() => score;
     public float GetHealthPercentage() => (float)currentHealth / maxHealth;
     public bool IsAlive() => currentHealth > 0;
+    public bool IsInvincible() => isInvincible;
 }
