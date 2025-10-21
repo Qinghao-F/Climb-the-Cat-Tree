@@ -1,6 +1,9 @@
 {
   "repoUrl": "https://github.com/feit-comp30019/2025s2-project-2-fox-fish",
   "teamName": "Fox and Fish",
+  "videoUrl": "https://youtu.be/hDFGHtWtS1U",
+  "gameTitle": "Climb the Cat Tree",
+  "gameBlurb": "Climb the Cat Tree is a fast paced, vertical scrolling arcade platformer where you play as a little mouse that finds herself being chased up a giant cat tree by a cat. Having no way but up, you must platform your way to the top while dodging the cat's swipes and hairballs as well as environmental dangers. "
   "teamMembers": [
     {
       "name": "Emily Wu",
