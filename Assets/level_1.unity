@@ -6360,6 +6360,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1881239066932375627, guid: b2df067a6d7894d5ca4050eedc6a72c3, type: 3}
   m_PrefabInstance: {fileID: 603321151}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &603641443 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3134683776982566671, guid: e66efd1533175a1409a850922d689fe3, type: 3}
+  m_PrefabInstance: {fileID: 4444144965392874166}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &603641446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603641443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fabf11de351f42cdb213569eb09f959, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &607682386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7692,6 +7709,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 3
+  invincibilityDuration: 1.5
+  deathDelay: 0.1
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -18628,6 +18647,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1972529099491601363, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 762364488}
+    - targetCorrespondingSourceObject: {fileID: 3134683776982566671, guid: e66efd1533175a1409a850922d689fe3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 603641446}
   m_SourcePrefab: {fileID: 100100000, guid: e66efd1533175a1409a850922d689fe3, type: 3}
 --- !u!1001 &6112229679296679863
 PrefabInstance:

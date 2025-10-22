@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+//using UnityEngine.SceneManagement; // reload scene
 
 public class PlayerInfo : MonoBehaviour
 {
     private Animator anim;
+    private Rigidbody2D rb;
+    private Collider2D[] colliders;
 
     // Singleton instance
     public static PlayerInfo Instance;
@@ -17,6 +20,11 @@ public class PlayerInfo : MonoBehaviour
     [SerializeField] private float invincibilityDuration = 1.5f;
     private bool isInvincible = false;
 
+    [Header("Death Settings")]
+    [Tooltip("Delay before death callback/GameOver to let the death animation play")]
+    [SerializeField] private float deathDelay = 0.1f;
+    private bool isDead = false;
+
     [Header("Score Settings")]
     private int score = 0;
 
@@ -28,6 +36,8 @@ public class PlayerInfo : MonoBehaviour
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        colliders = GetComponentsInChildren<Collider2D>(true);
 
         // Singleton
         if (Instance == null)
@@ -55,7 +65,7 @@ public class PlayerInfo : MonoBehaviour
     public void TakeDamage(int damage)
     {
         // Don't take damage if invincible or already dead
-        if (isInvincible || currentHealth <= 0)
+        if (isInvincible || isDead)
         {
             Debug.Log("Player is invincible or dead - no damage taken");
             return;
@@ -115,10 +125,52 @@ public class PlayerInfo : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Player died");
+        if (isDead) return; 
+        isDead = true;
         isInvincible = true; // Prevent multiple death calls
+        
+        Debug.Log("Player died");
+
+        //OnDeath?.Invoke();
+
+        if (anim)
+        {
+            // drive Animator conditions to force death transition from any state
+            anim.SetBool("isDead", true); // Pair this with Animator transitions (isDead == true)
+            anim.ResetTrigger("Hurt");
+            anim.SetBool("Walking", false);
+            anim.SetBool("Jumping", false);
+            anim.SetBool("isClimbing", false);
+            anim.SetTrigger("death"); // Trigger the death animation
+        }
+
+        if (rb)
+        {
+            // freeze rigidbody motion to avoid sliding/physics after death
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+        // disable colliders to avoid further interactions after death
+        if (colliders != null)
+        {
+            foreach (var c in colliders) c.enabled = false;
+        }
+
+        //StartCoroutine(DeathCallbackAfterDelay());
+    }
+
+    private IEnumerator DeathCallbackAfterDelay()
+    {
+        yield return new WaitForSeconds(deathDelay);
         OnDeath?.Invoke();
     }
+
+    // private void Restart() // reload scene
+    // {
+    //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    // }
+
 
     // Helper methods
     public int GetCurrentHealth() => currentHealth;
