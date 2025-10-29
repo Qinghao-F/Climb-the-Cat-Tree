@@ -1,96 +1,73 @@
-﻿//UNITY_SHADER_NO_UPGRADE
-
+﻿// UNITY_SHADER_NO_UPGRADE
 Shader "Unlit/WaveShader"
 {
-	Properties
-	{
-		_MainTex ("Texture", 2D) = "white" {}
-	}
-	SubShader
-	{
-		Pass
-		{
-			Cull Off
+    Properties
+    {
+        _MainTex ("Texture", 2D) = "white" {}
 
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
+        // 新增参数
+        _MaxAmp ("Max Amplitude", Range(0,5)) = 2     // 最远端的最大振幅
+        _Freq   ("Wave Frequency", Float)      = 1     // 波的空间频率
+        _Speed  ("Wave Speed", Float)          = 1     // 波的时间速度
+        _Falloff("Edge Falloff (pow)", Range(0,4)) = 1 // 距杆衰减的陡峭程度
+        _PoleOnRight ("Pole On Right? (0=left,1=right)", Float) = 0 // 旗杆在右边就设为1
+    }
+    SubShader
+    {
+        Pass
+        {
+            Cull Off
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
 
-			#include "UnityCG.cginc"
+            sampler2D _MainTex;
+            float4x4  _CustomMVP;
 
-			uniform sampler2D _MainTex;
-			uniform float4x4 _CustomMVP; // For task 9 (challenge) - see corresponding CustomMVP.cs file
+            float _MaxAmp, _Freq, _Speed, _Falloff, _PoleOnRight;
 
-			struct vertIn
-			{
-				float4 vertex : POSITION;
-				float2 uv : TEXCOORD0;
-			};
+            struct vertIn {
+                float4 vertex : POSITION;
+                float2 uv     : TEXCOORD0;
+            };
 
-			struct vertOut
-			{
-				float4 vertex : SV_POSITION;
-				float2 uv : TEXCOORD0;
-			};
+            struct vertOut {
+                float4 vertex : SV_POSITION;
+                float2 uv     : TEXCOORD0;
+            };
 
-			// Implementation of the vertex shader
-			vertOut vert(vertIn v)
-			{
-				// Displace the original vertex in model space
-				//float4 displacement = float4(0.0f, 0.0f, 0.0f, 0.0f);
-				//float4 displacement = float4(0.0f, 5.0f, 0.0f, 0.0f); // Task 2a
-				//float4 displacement = float4(0.0f, _Time.y, 0.0f, 0.0f); // Task 2b
-				//float4 displacement = float4(0.0f, sin(_Time.y), 0.0f, 0.0f); // Task 2c
-				//float4 displacement = float4(0.0f, sin(v.vertex.x), 0.0f, 0.0f); // Task 3
-				//float4 displacement = float4(0.0f, sin(v.vertex.x + _Time.y), 0.0f, 0.0f); // Task 4
-				//float4 displacement = float4(0.0f, sin(v.vertex.x + _Time.y) * 0.5f, 0.0f, 0.0f); // Task 5a
-				//float4 displacement = float4(0.0f, sin(v.vertex.x + _Time.y * 2.0f), 0.0f, 0.0f); // Task 5b
-				float4 displacement = float4(0.0f, sin(v.vertex.x + _Time.y * _Time.y), 0.0f, 0.0f); // Task 5c
-				v.vertex += displacement;
+            vertOut vert(vertIn v)
+            {
+                // 基于UV的衰减：靠近旗杆侧振幅更小
+                // 假设旗杆在UV.x=0一侧；若在右侧，使用 _PoleOnRight 反转
+                float u = v.uv.x;
+                // 当 _PoleOnRight >= 0.5 时，把 u 反转为 (1-u)
+                u = lerp(u, 1.0 - u, step(0.5, _PoleOnRight));
 
-				vertOut o;
+                // 衰减曲线：pow(u, _Falloff)（_Falloff 越大，靠杆越“硬”）
+                float attn = pow(saturate(1.0 - u), _Falloff);
 
-				// Tasks 6 onwards get you to work with MVP...
-				// Uncomment the respective sections to see them in action.
-				// The solution for Task 8 has been uncommented by default.
-				
-				//o.vertex = mul(UNITY_MATRIX_MVP, v.vertex); // Default
+                // 最终振幅（最远端为 _MaxAmp，靠近旗杆趋近 0）
+                float amp = _MaxAmp * attn;
 
-				// Task 6 - remove M
-				//o.vertex = mul(UNITY_MATRIX_VP, v.vertex); 
+                // 正弦位移（你原来的写法 + 可调速度/频率）
+                float wave = sin(v.vertex.x * _Freq + _Time.y * _Speed);
 
-				// Task 7 - remove V - Unfortunately there is no UNITY_MATRIX_MP
-				// so we have to do this ourselves.
-				//o.vertex = mul(mul(UNITY_MATRIX_P, unity_ObjectToWorld), v.vertex); 
-				
-				// Task 8 - Need to apply wave transformation between MV and P!
-				// Apply the model and view matrix to the vertex (but not the projection matrix yet)
-				//v.vertex = mul(UNITY_MATRIX_MV, v.vertex);
+                v.vertex.y += amp * wave;
 
-				// v.vertex is now in view space. This is the point where we want to apply the displacement.
-				//v.vertex += float4(0.0f, sin(v.vertex.x), 0.0f, 0.0f);
-				
-				// Finally apply the projection matrix to complete the transformation into screen space
-				//o.vertex = mul(UNITY_MATRIX_P, v.vertex);
+                vertOut o;
+                o.vertex = mul(_CustomMVP, v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
 
-				// Task 9 (challenge)
-				// Check out the CustomMVP.cs script as well...
-				// Obviously there's no need to ever do this yourself, as Unity
-				// already gives us UNITY_MATRIX_MVP, but it's a good learning
-				// exercise to see what's going on under the hood.
-				o.vertex = mul(_CustomMVP, v.vertex); 
-
-				o.uv = v.uv;
-				return o;
-			}
-			
-			// Implementation of the fragment shader
-			fixed4 frag(vertOut v) : SV_Target
-			{
-				fixed4 col = tex2D(_MainTex, v.uv);
-				return col;
-			}
-			ENDCG
-		}
-	}
+            fixed4 frag(vertOut i) : SV_Target
+            {
+                return tex2D(_MainTex, i.uv);
+            }
+            ENDCG
+        }
+    }
 }
+
