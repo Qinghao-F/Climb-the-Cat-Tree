@@ -5,12 +5,11 @@ Shader "Unlit/WaveShader"
     {
         _MainTex ("Texture", 2D) = "white" {}
 
-        // 新增参数
-        _MaxAmp ("Max Amplitude", Range(0,5)) = 2     // 最远端的最大振幅
-        _Freq   ("Wave Frequency", Float)      = 1     // 波的空间频率
-        _Speed  ("Wave Speed", Float)          = 1     // 波的时间速度
-        _Falloff("Edge Falloff (pow)", Range(0,4)) = 1 // 距杆衰减的陡峭程度
-        _PoleOnRight ("Pole On Right? (0=left,1=right)", Float) = 0 // 旗杆在右边就设为1
+        _MaxAmp ("Max Amplitude", Range(0,5)) = 2     // Maximum amplitude at the far end
+        _Freq   ("Wave Frequency", Float)      = 1     // Spatial frequency of the wave
+        _Speed  ("Wave Speed", Float)          = 1     // Temporal speed of the wave (animation speed)
+        _Falloff("Edge Falloff (pow)", Range(0,4)) = 1 // Steepness of the falloff from the pole
+        _PoleOnRight ("Pole On Right? (0=left,1=right)", Float) = 0
     }
     SubShader
     {
@@ -39,19 +38,17 @@ Shader "Unlit/WaveShader"
 
             vertOut vert(vertIn v)
             {
-                // 基于UV的衰减：靠近旗杆侧振幅更小
-                // 假设旗杆在UV.x=0一侧；若在右侧，使用 _PoleOnRight 反转
+                // UV-based falloff: smaller amplitude near the pole side
                 float u = v.uv.x;
-                // 当 _PoleOnRight >= 0.5 时，把 u 反转为 (1-u)
                 u = lerp(u, 1.0 - u, step(0.5, _PoleOnRight));
 
-                // 衰减曲线：pow(u, _Falloff)（_Falloff 越大，靠杆越“硬”）
+                // Falloff curve
                 float attn = pow(saturate(1.0 - u), _Falloff);
 
-                // 最终振幅（最远端为 _MaxAmp，靠近旗杆趋近 0）
+                // Final amplitude
                 float amp = _MaxAmp * attn;
 
-                // 正弦位移（你原来的写法 + 可调速度/频率）
+                // Sine displacement
                 float wave = sin(v.vertex.x * _Freq + _Time.y * _Speed);
 
                 v.vertex.y += amp * wave;
