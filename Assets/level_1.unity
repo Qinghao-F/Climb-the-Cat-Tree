@@ -8436,7 +8436,7 @@ MonoBehaviour:
     m_Bits: 8
   jumpKey: 32
   normalJumpForce: 60
-  targetSpeedMultiplier: 1.5
+  targetSpeedMultiplier: 1.05
   maxHoldTime: 0.3
   preLeaveCoyoteTime: 0.03
   showHUD: 0
@@ -8453,18 +8453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   climbSpeed: 6
-  extraSidePadding: 0.06
-  sideBlendSpeed: 10
-  sideSwitchDuration: 0.15
-  ignoreCollisionTime: 0.2
-  jumpOffForce: 6
-  jumpDirectionLocal: {x: 0, y: 1, z: 0.75}
-  outwardNudge: 0.12
-  postJumpNoCollideTime: 0.25
-  faceModeWhileClimbing: 0
-  spriteFacesRightByDefault: 1
-  entryFacingHoldTime: 0.12
-  holdJumpBooster: {fileID: 0}
+  ignoreTime: 0.25
 --- !u!1001 &763872352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20534,7 +20523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 510112593150837357, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 250.3
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 510112593150837357, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_LocalRotation.w
