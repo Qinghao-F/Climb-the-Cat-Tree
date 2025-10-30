@@ -110,20 +110,23 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (!isClimbing) return;
 
-        // Allow only vertical input
-        float v = Input.GetAxisRaw("Vertical");
-        if (Mathf.Abs(v) > 0.01f)
-            transform.position += Vector3.up * (v * climbSpeed * Time.deltaTime);
+        // Handle vertical movement
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        if (Mathf.Abs(verticalInput) > 0.01f)
+            transform.position += Vector3.up * (verticalInput * climbSpeed * Time.deltaTime);
 
-        // Detach with Space key
+        // Set Animator speed based on movement
+        if (anim)
+            anim.speed = Mathf.Abs(verticalInput); // 0 pauses animation, >0 plays
+
+        // Detach from rope with Space
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StopClimb();
             StartCoroutine(TemporarilyIgnoreRope(ignoreTime));
         }
-
-
     }
+
 
     void FixedUpdate()
     {
