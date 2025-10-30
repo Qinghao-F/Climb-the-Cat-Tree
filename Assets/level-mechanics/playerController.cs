@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,35 +9,30 @@ public class PlayerController : MonoBehaviour
 
     [Header("Ground Check Settings:")]
     [SerializeField] private Transform groundCheckPoint;
-    [SerializeField] private float groundCheckRadius = 0.25f; // instead of distance
+    [SerializeField] private float groundCheckRadius = 0.25f;
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private float extraGravity = 20f;
 
     [Header("flip:")]
-    [SerializeField] private Transform spriteTransform; // assign in inspector
+    [SerializeField] private Transform spriteTransform;
 
-    // Footstep SFX
     [Header("Footstep SFX (Flip Trigger)")]
-    [SerializeField] private AudioSource footstepSource;   // Disable Play On Awake and Loop
+    [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioClip[] footstepClips;
     [SerializeField] private Vector2 pitchJitter = new Vector2(0.95f, 1.05f);
     [SerializeField] private float footstepVolume = 0.8f;
 
-
     private Rigidbody rb;
     private float xAxis;
     private Animator anim;
-
-    // Track current facing: 1 = right, −1 = left
     private int facingDir = 1;
-
-    private float _nextStepTime;
+    private PlayerRopeClimb ropeClimb;
 
     public static PlayerController Instance;
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
@@ -49,27 +45,38 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // Freeze Z so player stays in 2.5D lane
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
         anim = GetComponentInChildren<Animator>();
+        ropeClimb = GetComponent<PlayerRopeClimb>();
 
-        // Initialize facing direction from the current local scale
         facingDir = (spriteTransform != null && spriteTransform.localScale.x < 0f) ? -1 : 1;
     }
 
     void Update()
     {
+        if (ropeClimb != null && ropeClimb.IsClimbing)
+        {
+            // Only update vertical input if you want manual movement
+            ropeClimb.HandleVerticalInput();
+            return; // Skip regular movement
+        }
+
         GetInputs();
         Move();
         Jump();
         Flip();
     }
+
+
     void FixedUpdate()
     {
-    if (!Grounded())
-    {
-        rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
-    }
+        // Skip gravity when climbing
+        if (ropeClimb != null && ropeClimb.IsClimbing) return;
+
+        if (!Grounded())
+        {
+            rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
+        }
     }
 
     void GetInputs()
@@ -84,7 +91,6 @@ public class PlayerController : MonoBehaviour
             spriteTransform.localScale = new Vector3(-Mathf.Abs(spriteTransform.localScale.x),
                                                     spriteTransform.localScale.y,
                                                     spriteTransform.localScale.z);
-
             facingDir = -1;
             TryPlayFlipFootstep();
         }
@@ -101,15 +107,12 @@ public class PlayerController : MonoBehaviour
     void Move()
     {
         rb.linearVelocity = new Vector3(walkSpeed * xAxis, rb.linearVelocity.y, 0f);
-        
         anim.SetBool("Walking", rb.linearVelocity.x != 0 && Grounded());
     }
 
     public bool Grounded()
     {
-        // Draw sphere for debugging (optional, only in Editor)
         Debug.DrawRay(groundCheckPoint.position, Vector3.down * 0.01f, Color.green);
-        
         return Physics.CheckSphere(groundCheckPoint.position, groundCheckRadius, whatIsGround);
     }
 
@@ -117,7 +120,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0)
         {
-            // Short hop if player releases jump early
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         }
 
@@ -131,7 +133,6 @@ public class PlayerController : MonoBehaviour
 
     void TryPlayFlipFootstep()
     {
-        // Avoid playing sound during mid-air flips or direction changes
         bool grounded = Grounded();
         bool movingHorizontally = Mathf.Abs(rb.linearVelocity.x) > 0.05f;
 

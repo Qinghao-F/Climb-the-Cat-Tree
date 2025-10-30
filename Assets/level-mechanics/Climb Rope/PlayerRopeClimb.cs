@@ -21,6 +21,7 @@ public class PlayerRopeClimb : MonoBehaviour
     // Internal state
     Rigidbody rb;
     bool isClimbing;
+    public bool IsClimbing => isClimbing;
     Collider ropeCollider;            // Collider of the rope currently being climbed
     float lockedZ;                    // Player's preserved Z position
 
@@ -121,13 +122,6 @@ public class PlayerRopeClimb : MonoBehaviour
             StartCoroutine(TemporarilyIgnoreRope(ignoreTime));
         }
 
-        if (anim)
-        {
-            if (Mathf.Abs(v) > 0.01f)
-                anim.speed = 1f; // playing
-            else
-                anim.speed = 0f; // freeze frame
-        }
 
     }
 
@@ -159,11 +153,14 @@ public class PlayerRopeClimb : MonoBehaviour
     // Clears any residual velocity
     void ZeroVelocity()
     {
+        if (!rb.isKinematic)
+        {
 #if UNITY_6000_0_OR_NEWER
-        rb.linearVelocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
 #else
         rb.velocity = Vector3.zero;
 #endif
+        }
     }
 
     // Temporarily disables rope collisions after detaching
@@ -184,5 +181,10 @@ public class PlayerRopeClimb : MonoBehaviour
                 foreach (var rc in ropeCols)
                     if (rc)
                         Physics.IgnoreCollision(pc, rc, false);
+    }
+    public void HandleVerticalInput()
+    {
+        float v = Input.GetAxisRaw("Vertical");
+        transform.position += Vector3.up * (v * climbSpeed * Time.deltaTime);
     }
 }

@@ -87,13 +87,15 @@ public class HoldJumpBooster : MonoBehaviour
             // Maintain higher upward speed while holding jump
             if (boostWindowActive && holdTimeLeft > 0f && Input.GetKey(jumpKey))
             {
-                var v = rb.linearVelocity;
-                float targetVy = normalJumpForce * targetSpeedMultiplier;
+                if (!rb.isKinematic) 
+                {
+                    var v = rb.linearVelocity;
+                    float targetVy = normalJumpForce * targetSpeedMultiplier;
+                    v.y = Mathf.Max(v.y, targetVy);
+                    rb.linearVelocity = v;
 
-                v.y = Mathf.Max(v.y, targetVy);
-                rb.linearVelocity = v;
-
-                holdTimeLeft -= Time.deltaTime;
+                    holdTimeLeft -= Time.deltaTime;
+                }
             }
 
             // End conditions for the boost window
