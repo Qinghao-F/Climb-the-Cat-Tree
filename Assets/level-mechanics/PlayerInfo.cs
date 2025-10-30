@@ -33,6 +33,31 @@ public class PlayerInfo : MonoBehaviour
     public UnityEvent<int> OnScoreChanged;
     public UnityEvent OnDeath;
 
+    // Audio SFX
+    [Header("SFX")]
+    [Tooltip("AudioSource for one-shot SFX (Play On Awake OFF, Loop OFF)")]
+    [SerializeField] private AudioSource sfxSource;
+
+    [Tooltip("Mouse squeaks when hurt (random one will play)")]
+    [SerializeField] private AudioClip[] hurtClips;
+
+    [Tooltip("Mouse death sounds (random one will play)")]
+    [SerializeField] private AudioClip[] deathClips;
+
+    [Tooltip("Volume for hurt squeak")]
+    [Range(0f, 1f)] [SerializeField] private float hurtVolume = 0.9f;
+
+    [Tooltip("Volume for death sound")]
+    [Range(0f, 1f)] [SerializeField] private float deathVolume = 1.0f;
+
+    [Tooltip("Random pitch range, e.g., 0.95–1.05")]
+    [SerializeField] private Vector2 pitchJitter = new Vector2(0.95f, 1.05f);
+
+    [Tooltip("Cooldown to avoid spammy hurt squeaks (seconds)")]
+    [SerializeField] private float hurtSfxCooldown = 0.1f;
+
+    private float _lastHurtSfxTime = -999f;
+
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -87,6 +112,9 @@ public class PlayerInfo : MonoBehaviour
         }
         else
         {
+            // hurt sound
+            TryPlayHurtSqueak();
+
             // Activate invincibility frames
             StartCoroutine(BecomeInvincible());
         }
@@ -157,6 +185,9 @@ public class PlayerInfo : MonoBehaviour
             foreach (var c in colliders) c.enabled = false;
         }
 
+        // DEATH SOUND
+        PlayDeathSound();
+
         //StartCoroutine(DeathCallbackAfterDelay());
     }
 
@@ -179,4 +210,31 @@ public class PlayerInfo : MonoBehaviour
     public float GetHealthPercentage() => (float)currentHealth / maxHealth;
     public bool IsAlive() => currentHealth > 0;
     public bool IsInvincible() => isInvincible;
+
+     // Audio Helpers
+    private void TryPlayHurtSqueak()
+    {
+        if (sfxSource == null || hurtClips == null || hurtClips.Length == 0) return;
+        if (Time.time - _lastHurtSfxTime < hurtSfxCooldown) return;
+
+        PlayOneShotRandom(hurtClips, hurtVolume);
+        _lastHurtSfxTime = Time.time;
+    }
+
+    private void PlayDeathSound()
+    {
+        if (sfxSource == null || deathClips == null || deathClips.Length == 0) return;
+        PlayOneShotRandom(deathClips, deathVolume);
+    }
+
+    private void PlayOneShotRandom(AudioClip[] bank, float volume)
+    {
+        if (bank == null || bank.Length == 0) return;
+        var clip = bank[Random.Range(0, bank.Length)];
+        sfxSource.pitch = Random.Range(pitchJitter.x, pitchJitter.y);
+        sfxSource.PlayOneShot(clip, volume);
+    }
+    
+    public void AnimEvent_DeathSFX() => PlayDeathSound();
+    public void AnimEvent_HurtSFX()  => TryPlayHurtSqueak();
 }

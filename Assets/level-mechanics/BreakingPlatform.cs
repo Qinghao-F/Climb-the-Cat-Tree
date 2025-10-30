@@ -10,6 +10,12 @@ public class BreakingPlatform : MonoBehaviour
     [Header("Shake Settings")]
     public float shakeIntensity = 0.2f;
     public bool shakes = true;
+    
+    [Header("Audio")]
+    [SerializeField] private AudioClip breakSFX;
+    [SerializeField, Range(0f,1f)] private float sfxVolume = 1f;
+    [SerializeField] private bool use2DSound = false;
+    [SerializeField] private Vector2 pitchRandom = new Vector2(0.98f, 1.02f);
 
 
     private Vector3 originalPosition;
@@ -80,6 +86,8 @@ public class BreakingPlatform : MonoBehaviour
 
     void Break()
     {
+        PlaySFXAt(breakSFX, transform.position);
+
         // can do sound here
         if (meshRenderer != null)
         {
@@ -104,4 +112,26 @@ public class BreakingPlatform : MonoBehaviour
         }
         isBroken = false;
     }
+
+    private void PlaySFXAt(AudioClip clip, Vector3 pos)
+    {
+        if (clip == null) return;
+
+        var go = new GameObject($"OneShot_{clip.name}");
+        go.transform.position = pos;
+
+        var src = go.AddComponent<AudioSource>();
+        src.playOnAwake = false;
+        src.spatialBlend = use2DSound ? 0f : 1f;   // 0=2D, 1=3D
+        src.rolloffMode = AudioRolloffMode.Linear;
+        src.minDistance = 2f;
+        src.maxDistance = 20f;
+
+        src.pitch = Mathf.Clamp(Random.Range(pitchRandom.x, pitchRandom.y), 0.5f, 2f);
+
+        src.PlayOneShot(clip, sfxVolume);
+
+        Destroy(go, clip.length / Mathf.Max(src.pitch, 0.01f) + 0.05f);
+    }
 }
+

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -2054153603386195333}
   - component: {fileID: 3830213545480371002}
   m_Layer: 0
-  m_Name: Cheese
+  m_Name: cheese
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,5 +126,8 @@ MonoBehaviour:
   bobHeight: 0.5
   bobSpeed: 1
   collectVFX: {fileID: 5544967064310194355, guid: 60e88fc4b6dcb41829d5e27461df1ece, type: 3}
-  collectSound: {fileID: 0}
+  collectSound: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
   destroyDelay: 0.1
+  soundVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}

@@ -1449,6 +1449,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &135769339
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2989,6 +2993,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ab03d2e585950a48bc6f39cac43bfd4, type: 3}
+--- !u!82 &290646992 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7027214237356847553, guid: 4ce845a9e6c293a47b2ca37840fe6596, type: 3}
+  m_PrefabInstance: {fileID: 4008328991878538275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &305426634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4845,6 +4854,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &443120172
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5748,6 +5761,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &532228592
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6520,6 +6537,8 @@ GameObject:
   - component: {fileID: 602549791}
   - component: {fileID: 602549790}
   - component: {fileID: 602549789}
+  - component: {fileID: 602549793}
+  - component: {fileID: 602549792}
   m_Layer: 5
   m_Name: Cat
   m_TagString: Untagged
@@ -6606,6 +6625,123 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 602549787}
   m_CullTransparentMesh: 1
+--- !u!114 &602549792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602549787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d910089eb9bcf445c82231af438142be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 602549793}
+  meows:
+  - {fileID: 8300000, guid: dd193e3c9e6664112aedfb9067e4074b, type: 3}
+  volume: 1
+  intervalSeconds: 15
+  useRealtime: 0
+  pitchRange: {x: 1, y: 1}
+  jitter: {x: 0, y: 0}
+--- !u!82 &602549793
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602549787}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &603321151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8417,6 +8553,15 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls: []
+  sfxSource: {fileID: 290646992}
+  hurtClips:
+  - {fileID: 8300000, guid: 7bef0064f8567430cac22499c6b93d4f, type: 3}
+  deathClips:
+  - {fileID: 8300000, guid: dc6614beca09347ec9b258f12d154bdd, type: 3}
+  hurtVolume: 0.9
+  deathVolume: 1
+  pitchJitter: {x: 0.95, y: 1.05}
+  hurtSfxCooldown: 0.1
 --- !u!114 &762364482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8662,6 +8807,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &791438835
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8710,6 +8859,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 0}
+  sfxVolume: 1
+  use2DSound: 0
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &794056818
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8841,6 +8994,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &809858516
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15021,6 +15178,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 0}
+  sfxVolume: 1
+  use2DSound: 0
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &1517608870
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17384,6 +17545,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 0}
+  sfxVolume: 1
+  use2DSound: 0
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &1709286088
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17849,6 +18014,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &1752893753
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17892,6 +18061,10 @@ MonoBehaviour:
   respawns: 1
   shakeIntensity: 0.2
   shakes: 1
+  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  sfxVolume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
 --- !u!65 &1755083043
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20610,9 +20783,21 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7610146459062905645, guid: e66efd1533175a1409a850922d689fe3, type: 3}
+      propertyPath: footstepSource
+      value: 
+      objectReference: {fileID: 290646992}
+    - target: {fileID: 7610146459062905645, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7610146459062905645, guid: e66efd1533175a1409a850922d689fe3, type: 3}
+      propertyPath: footstepClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610146459062905645, guid: e66efd1533175a1409a850922d689fe3, type: 3}
+      propertyPath: 'footstepClips.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
     - target: {fileID: 8180168653244272315, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Enabled
       value: 0

@@ -6,18 +6,31 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed = 10f;
     [SerializeField] private float jumpForce = 7f;
 
-[Header("Ground Check Settings:")]
-[SerializeField] private Transform groundCheckPoint;
-[SerializeField] private float groundCheckRadius = 0.25f; // instead of distance
-[SerializeField] private LayerMask whatIsGround;
-[SerializeField] private float extraGravity = 20f;
+    [Header("Ground Check Settings:")]
+    [SerializeField] private Transform groundCheckPoint;
+    [SerializeField] private float groundCheckRadius = 0.25f; // instead of distance
+    [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private float extraGravity = 20f;
 
     [Header("flip:")]
     [SerializeField] private Transform spriteTransform; // assign in inspector
 
+    // Footstep SFX
+    [Header("Footstep SFX (Flip Trigger)")]
+    [SerializeField] private AudioSource footstepSource;   // Disable Play On Awake and Loop
+    [SerializeField] private AudioClip[] footstepClips;
+    [SerializeField] private Vector2 pitchJitter = new Vector2(0.95f, 1.05f);
+    [SerializeField] private float footstepVolume = 0.8f;
+
+
     private Rigidbody rb;
     private float xAxis;
     private Animator anim;
+
+    // Track current facing: 1 = right, −1 = left
+    private int facingDir = 1;
+
+    private float _nextStepTime;
 
     public static PlayerController Instance;
 
@@ -39,6 +52,9 @@ public class PlayerController : MonoBehaviour
         // Freeze Z so player stays in 2.5D lane
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
         anim = GetComponentInChildren<Animator>();
+
+        // Initialize facing direction from the current local scale
+        facingDir = (spriteTransform != null && spriteTransform.localScale.x < 0f) ? -1 : 1;
     }
 
     void Update()
@@ -63,17 +79,22 @@ public class PlayerController : MonoBehaviour
 
     void Flip()
     {
-        if (xAxis < 0)
+        if (xAxis < 0 && facingDir != -1)
         {
             spriteTransform.localScale = new Vector3(-Mathf.Abs(spriteTransform.localScale.x),
                                                     spriteTransform.localScale.y,
                                                     spriteTransform.localScale.z);
+
+            facingDir = -1;
+            TryPlayFlipFootstep();
         }
-        else if (xAxis > 0)
+        else if (xAxis > 0 && facingDir != 1)
         {
             spriteTransform.localScale = new Vector3(Mathf.Abs(spriteTransform.localScale.x),
                                                     spriteTransform.localScale.y,
                                                     spriteTransform.localScale.z);
+            facingDir = 1;
+            TryPlayFlipFootstep();
         }
     }
 
@@ -106,5 +127,25 @@ public class PlayerController : MonoBehaviour
         }
 
         anim.SetBool("Jumping", !Grounded());
+    }
+
+    void TryPlayFlipFootstep()
+    {
+        // Avoid playing sound during mid-air flips or direction changes
+        bool grounded = Grounded();
+        bool movingHorizontally = Mathf.Abs(rb.linearVelocity.x) > 0.05f;
+
+        if (!grounded || !movingHorizontally) return;
+
+        PlayFootstepOneShot();
+    }
+
+    void PlayFootstepOneShot()
+    {
+        if (footstepSource == null || footstepClips == null || footstepClips.Length == 0) return;
+
+        var clip = footstepClips[Random.Range(0, footstepClips.Length)];
+        footstepSource.pitch = Random.Range(pitchJitter.x, pitchJitter.y);
+        footstepSource.PlayOneShot(clip, footstepVolume);
     }
 }

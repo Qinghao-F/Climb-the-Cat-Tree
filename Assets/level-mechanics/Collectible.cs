@@ -14,6 +14,10 @@ public class Collectible : MonoBehaviour
     [SerializeField] private GameObject collectVFX; 
     [SerializeField] private AudioClip collectSound;
     [SerializeField] private float destroyDelay = 0.1f;
+    [SerializeField, Range(0f, 1f)] private float soundVolume = 1f;
+    [SerializeField] private bool use2DSound = true;
+    [SerializeField] private Vector2 pitchRandom = new Vector2(0.98f, 1.02f);
+
 
     private Vector3 startPosition;
 
@@ -48,7 +52,21 @@ public class Collectible : MonoBehaviour
             // Play sound effect
             if (collectSound != null)
             {
-                AudioSource.PlayClipAtPoint(collectSound, transform.position);
+                var go = new GameObject("CheeseSFX");
+                go.transform.position = transform.position;
+                var src = go.AddComponent<AudioSource>();
+
+                // 2D/3D
+                src.spatialBlend = use2DSound ? 0f : 1f;
+                src.rolloffMode = AudioRolloffMode.Linear;
+                src.minDistance = 2f;
+                src.maxDistance = 20f;
+
+                // slight random pitch
+                src.pitch = Mathf.Clamp(Random.Range(pitchRandom.x, pitchRandom.y), 0.5f, 2f);
+
+                src.PlayOneShot(collectSound, soundVolume);
+                Destroy(go, collectSound.length / Mathf.Max(src.pitch, 0.01f) + 0.05f);
             }
 
             // Log for debugging

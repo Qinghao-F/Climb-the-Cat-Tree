@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1487492282085935979}
   - component: {fileID: 4923871217016607526}
   - component: {fileID: 3099376676201709768}
+  - component: {fileID: -7892095038721734466}
   m_Layer: 3
   m_Name: Jump Platform
   m_TagString: Untagged
@@ -121,3 +122,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b87298a1e0bf4378885aed2c1bb80e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-7892095038721734466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7020254331041752399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e450075fa34141e9adeccda1d30d214, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpPadSFX: {fileID: 8300000, guid: b43d102aac6b145468dcaa94a5cccae1, type: 3}
+  volume: 1
+  use2DSound: 1
+  pitchRandom: {x: 0.98, y: 1.02}
+  minImpactSpeed: 1
+  cooldown: 0.1
+  sfxMixerGroup: {fileID: 0}
