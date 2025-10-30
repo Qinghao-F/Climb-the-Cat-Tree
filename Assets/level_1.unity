@@ -5083,6 +5083,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fish_001
       objectReference: {fileID: 0}
+    - target: {fileID: 6765674851212242868, guid: 19778a1cec25085409918a09efe96dee, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7904,7 +7908,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.1908865
+      value: 0.99
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalScale.y
@@ -7916,7 +7920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.92
+      value: 3.6
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9034,6 +9038,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 57ef800837ad44515a9d1f413b3acd74, type: 3}
       propertyPath: m_Name
       value: cat swing (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 57ef800837ad44515a9d1f413b3acd74, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11120,6 +11128,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 57ef800837ad44515a9d1f413b3acd74, type: 3}
       propertyPath: m_Name
       value: cat swing (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 57ef800837ad44515a9d1f413b3acd74, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17673,6 +17685,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: cat swing (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 57ef800837ad44515a9d1f413b3acd74, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18614,6 +18630,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: cat swing
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 57ef800837ad44515a9d1f413b3acd74, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19247,6 +19267,10 @@ PrefabInstance:
     - target: {fileID: 6765674851212242868, guid: 19778a1cec25085409918a09efe96dee, type: 3}
       propertyPath: m_Name
       value: fish_001 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6765674851212242868, guid: 19778a1cec25085409918a09efe96dee, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
