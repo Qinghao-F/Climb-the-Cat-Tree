@@ -31,11 +31,14 @@ public class PlayerRopeClimb : MonoBehaviour
     bool savedUseGravity;
     bool savedIsKinematic;
     RigidbodyConstraints savedConstraints;
+    private Animator anim;
+
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         playerCols.AddRange(GetComponentsInChildren<Collider>(true));
+        anim = GetComponentInChildren<Animator>();
     }
 
     // Checks if the object hit behaves like a rope
@@ -83,6 +86,7 @@ public class PlayerRopeClimb : MonoBehaviour
         rb.useGravity  = false;
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        if (anim) anim.SetBool("isClimbing", true);
 
         ZeroVelocity();
     }
@@ -116,6 +120,15 @@ public class PlayerRopeClimb : MonoBehaviour
             StopClimb();
             StartCoroutine(TemporarilyIgnoreRope(ignoreTime));
         }
+
+        if (anim)
+        {
+            if (Mathf.Abs(v) > 0.01f)
+                anim.speed = 1f; // playing
+            else
+                anim.speed = 0f; // freeze frame
+        }
+
     }
 
     void FixedUpdate()
@@ -136,6 +149,9 @@ public class PlayerRopeClimb : MonoBehaviour
         rb.isKinematic = savedIsKinematic;
         rb.useGravity  = savedUseGravity;
         rb.constraints = savedConstraints;
+
+        if (anim) anim.SetBool("isClimbing", false);
+        if (anim) anim.speed = 1f;
 
         ropeCollider = null;
     }
