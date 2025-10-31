@@ -4,7 +4,7 @@ using UnityEngine;
 public class Finish : MonoBehaviour
 {
     [Header("Win UI")]
-    [SerializeField] private GameObject winPanel;
+    [SerializeField] private WinPanelManager winPanelManager;
     [SerializeField] private float showDelay = 0.5f;
 
     private AudioSource finishSound;
@@ -18,7 +18,8 @@ public class Finish : MonoBehaviour
         var col = GetComponent<BoxCollider>();
         if (col != null) col.isTrigger = true;
 
-        if (winPanel != null) winPanel.SetActive(false);
+        if (winPanelManager != null)
+            winPanelManager.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -38,8 +39,15 @@ public class Finish : MonoBehaviour
 
     private void finishLevel()
     {
-        // show win panel
-        if (winPanel != null) winPanel.SetActive(true);
+        // Show win panel with score and stars
+        if (winPanelManager != null)
+        {
+            winPanelManager.ShowWinPanel();
+        }
+        else
+        {
+            Debug.LogError("Finish: WinPanelManager reference is missing!");
+        }
 
         // pause
         Time.timeScale = 0f;
@@ -59,4 +67,3 @@ public class Finish : MonoBehaviour
         }
     }
 }
-
