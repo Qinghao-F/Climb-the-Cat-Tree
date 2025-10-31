@@ -8,9 +8,11 @@ public class MovingPlatform : MonoBehaviour
     public float bound = 10f; // distance between point A and B
     
     [Header("Movement Axis")]
+    // NOTE: Setting this to Vector3.up (0, 1, 0) gives vertical movement.
+    // Setting this to Vector3.right + Vector3.up (1, 1, 0) gives diagonal movement.
     public Vector3 movementDirection = Vector3.right; // Default moves on x-axis
 
-    private Vector3 pointA; // start point  
+    private Vector3 pointA; // start point  
     private Vector3 pointB; // end point
     private bool waiting = false;
     private bool goingToPointB = true;
@@ -18,6 +20,14 @@ public class MovingPlatform : MonoBehaviour
 
     void Start()
     {
+        if (movementDirection.sqrMagnitude < 0.001f)
+        {
+            Debug.LogError("MovingPlatform: movementDirection is zero on " + gameObject.name + ". Platform disabled.");
+            enabled = false;
+            return;
+        }
+
+        // Calculate the two endpoints (A and B)
         pointA = transform.position;
         pointB = pointA + (movementDirection.normalized * bound);
         
