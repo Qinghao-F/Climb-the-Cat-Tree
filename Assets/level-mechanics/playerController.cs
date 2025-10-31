@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
         if (ropeClimb != null && ropeClimb.IsClimbing)
         {
             // Only update vertical input if you want manual movement
-            ropeClimb.HandleVerticalInput();
+            //ropeClimb.HandleVerticalInput();
             return; // Skip regular movement
         }
 

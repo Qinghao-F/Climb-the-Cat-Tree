@@ -26,7 +26,6 @@ public class CatPawSwipe : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 offScreenPosition;
     private Vector3 warningPosition; // Position during warning
-    private bool isAttacking = false;
     private SpriteRenderer spriteRenderer;
     
     public enum SwipeDirection
@@ -185,7 +184,6 @@ public class CatPawSwipe : MonoBehaviour
     
     IEnumerator SwipeIn()
     {
-        isAttacking = true;
         
         // Fast swipe in
         while (Vector3.Distance(transform.position, startPosition) > 0.1f)
@@ -207,7 +205,6 @@ public class CatPawSwipe : MonoBehaviour
         }
         
         transform.position = offScreenPosition;
-        isAttacking = false;
     }
     
     // For 2D colliders in 2.5D space - checks Z depth too

@@ -22,18 +22,17 @@ public class PlayerRopeClimb : MonoBehaviour
     Rigidbody rb;
     bool isClimbing;
     public bool IsClimbing => isClimbing;
-    Collider ropeCollider;            // Collider of the rope currently being climbed
-    float lockedZ;                    // Player's preserved Z position
+    Collider ropeCollider;            // Collider of the rope currently being climbed
+    float lockedZ;                    // Player's preserved Z position
 
     readonly List<Collider> playerCols = new();
-    readonly List<Collider> ropeCols   = new();
+    readonly List<Collider> ropeCols = new();
 
     // Saved physics properties
     bool savedUseGravity;
     bool savedIsKinematic;
     RigidbodyConstraints savedConstraints;
     private Animator anim;
-
 
     void Awake()
     {
@@ -80,11 +79,12 @@ public class PlayerRopeClimb : MonoBehaviour
         lockedZ = transform.position.z;
 
         // Save physics state and restrict movement
-        savedUseGravity  = rb.useGravity;
+        savedUseGravity = rb.useGravity;
         savedIsKinematic = rb.isKinematic;
         savedConstraints = rb.constraints;
 
-        rb.useGravity  = false;
+        // Set Kinematic and disable gravity for pure position control
+        rb.useGravity = false;
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         if (anim) anim.SetBool("isClimbing", true);
@@ -97,10 +97,9 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (!isClimbing || ropeCollider == null) return;
 
-        if (other == ropeCollider ||
-            other.transform == ropeCollider.transform ||
-            other.transform.IsChildOf(ropeCollider.transform) ||
-            ropeCollider.transform.IsChildOf(other.transform))
+        // BUG FIX: Only stop climbing if the specific collider that started the climb is exiting.
+        // This prevents premature stops when moving between segmented rope colliders.
+        if (other == ropeCollider)
         {
             StopClimb();
         }
@@ -110,10 +109,8 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (!isClimbing) return;
 
-        // Handle vertical movement
+        // Get Input and handle Detach (Input should be checked in Update)
         float verticalInput = Input.GetAxisRaw("Vertical");
-        if (Mathf.Abs(verticalInput) > 0.01f)
-            transform.position += Vector3.up * (verticalInput * climbSpeed * Time.deltaTime);
 
         // Set Animator speed based on movement
         if (anim)
@@ -132,6 +129,12 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (!isClimbing || ropeCollider == null) return;
 
+        // BUG FIX: Movement is moved to FixedUpdate to synchronize with position snapping
+        // and prevent jitter when the Rigidbody is kinematic.
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        if (Mathf.Abs(verticalInput) > 0.01f)
+            transform.position += Vector3.up * (verticalInput * climbSpeed * Time.fixedDeltaTime); // Use fixedDeltaTime
+
         // Snap X to rope collider centre, keep Y as is, lock Z
         float centreX = ropeCollider.bounds.center.x;
         Vector3 p = transform.position;
@@ -143,12 +146,16 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         isClimbing = false;
 
+        // Restore saved physics properties
         rb.isKinematic = savedIsKinematic;
-        rb.useGravity  = savedUseGravity;
+        rb.useGravity = savedUseGravity;
         rb.constraints = savedConstraints;
 
-        if (anim) anim.SetBool("isClimbing", false);
-        if (anim) anim.speed = 1f;
+        if (anim)
+        {
+            anim.SetBool("isClimbing", false);
+            anim.speed = 1f;
+        }
 
         ropeCollider = null;
     }
@@ -161,7 +168,7 @@ public class PlayerRopeClimb : MonoBehaviour
 #if UNITY_6000_0_OR_NEWER
             rb.linearVelocity = Vector3.zero;
 #else
-        rb.velocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
 #endif
         }
     }
@@ -171,6 +178,7 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (seconds <= 0f || ropeCols.Count == 0) yield break;
 
+        // Ignore collisions
         foreach (var pc in playerCols)
             if (pc && pc.enabled)
                 foreach (var rc in ropeCols)
@@ -179,15 +187,12 @@ public class PlayerRopeClimb : MonoBehaviour
 
         yield return new WaitForSeconds(seconds);
 
+        // Re-enable collisions
         foreach (var pc in playerCols)
             if (pc)
                 foreach (var rc in ropeCols)
                     if (rc)
                         Physics.IgnoreCollision(pc, rc, false);
     }
-    public void HandleVerticalInput()
-    {
-        float v = Input.GetAxisRaw("Vertical");
-        transform.position += Vector3.up * (v * climbSpeed * Time.deltaTime);
-    }
+
 }
