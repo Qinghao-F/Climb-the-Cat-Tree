@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,10 +9,13 @@ public class Help : MonoBehaviour
     {
         if (helpPanel != null) helpPanel.SetActive(false);
     }
-
     public void ShowHelp()
     {
         if (helpPanel != null) helpPanel.SetActive(true);
     }
 
+    public void HideHelp()
+    {
+        if (helpPanel != null) helpPanel.SetActive(false);
+    }
 }
