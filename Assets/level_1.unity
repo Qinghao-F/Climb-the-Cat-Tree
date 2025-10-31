@@ -11278,6 +11278,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3830213545480371002, guid: b2df067a6d7894d5ca4050eedc6a72c3, type: 3}
+      propertyPath: soundVolume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4175917138084829266, guid: b2df067a6d7894d5ca4050eedc6a72c3, type: 3}
       propertyPath: m_Name
       value: Cheese (4)
@@ -19137,6 +19141,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4744327663123227845, guid: 4ce845a9e6c293a47b2ca37840fe6596, type: 3}
+      propertyPath: sfxVolume
+      value: 0.41
+      objectReference: {fileID: 0}
     - target: {fileID: 5552034064800992494, guid: 4ce845a9e6c293a47b2ca37840fe6596, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.02265
@@ -19176,6 +19184,10 @@ PrefabInstance:
     - target: {fileID: 5552034064800992494, guid: 4ce845a9e6c293a47b2ca37840fe6596, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990269504042674287, guid: 4ce845a9e6c293a47b2ca37840fe6596, type: 3}
+      propertyPath: m_Volume
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7708416335622394096, guid: 4ce845a9e6c293a47b2ca37840fe6596, type: 3}
       propertyPath: m_Name
