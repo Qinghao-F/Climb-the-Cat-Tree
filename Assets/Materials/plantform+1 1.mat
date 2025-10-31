@@ -29,7 +29,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 42f37574273ee487aba51d121fb6e28b, type: 3}
+        m_Texture: {fileID: 2800000, guid: e2227d279153f4e0da31d92da4fba657, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -93,7 +93,7 @@ Material:
     - _ZOffset: 0.1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.5176471, g: 0.4392157, b: 1, a: 1}
+    - _BaseColor: {r: 0.26517445, g: 0.5032674, b: 0.9528302, a: 1}
     - _Color: {r: 0.9019608, g: 0.54901963, b: 0.58431375, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
