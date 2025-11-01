@@ -50,10 +50,7 @@ public class Collectible : MonoBehaviour
         {
             AudioManager.Instance?.PlaySFX(collectSound, soundVolume);
         }
-
-        // Update UI
-        CheeseUI.Instance?.Add(1);
-
+        
         // Destroy collectible
         Destroy(gameObject, 0.1f);
     }
