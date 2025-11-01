@@ -30,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 250}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.1, y: 2.1, z: 2.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -127,7 +127,5 @@ MonoBehaviour:
   bobSpeed: 1
   collectVFX: {fileID: 5544967064310194355, guid: 60e88fc4b6dcb41829d5e27461df1ece, type: 3}
   collectSound: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
-  destroyDelay: 0.1
   soundVolume: 1
-  use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
