@@ -22,17 +22,26 @@ public class PlayerRopeClimb : MonoBehaviour
     Rigidbody rb;
     bool isClimbing;
     public bool IsClimbing => isClimbing;
-    Collider ropeCollider;            // Collider of the rope currently being climbed
-    float lockedZ;                    // Player's preserved Z position
+    
+    // Track ALL rope colliders we're currently touching
+    readonly HashSet<Collider> activeRopeColliders = new();
+    Transform currentRopeTransform;   // Root transform of current rope
+    float lockedZ;                    // Player's preserved Z position
 
     readonly List<Collider> playerCols = new();
-    readonly List<Collider> ropeCols = new();
+    readonly List<Collider> allRopeCols = new();
 
     // Saved physics properties
     bool savedUseGravity;
     bool savedIsKinematic;
     RigidbodyConstraints savedConstraints;
     private Animator anim;
+
+    // Input caching
+    private float verticalInput;
+    
+    // Collision ignore tracking
+    private Coroutine ignoreCoroutine;
 
     void Awake()
     {
@@ -58,18 +67,69 @@ public class PlayerRopeClimb : MonoBehaviour
 
     // Start climbing when entering a rope trigger
     void OnTriggerEnter(Collider other) => TryBegin(other);
-    void OnTriggerStay(Collider other) { if (!isClimbing) TryBegin(other); }
+    void OnTriggerStay(Collider other) 
+    { 
+        if (LooksLikeRope(other.transform))
+        {
+            activeRopeColliders.Add(other);
+            if (!isClimbing) TryBegin(other);
+        }
+    }
 
     void TryBegin(Collider hit)
     {
-        if (isClimbing) return;
         if (!LooksLikeRope(hit.transform)) return;
+        
+        // Stop any ongoing collision ignore coroutine
+        if (ignoreCoroutine != null)
+        {
+            StopCoroutine(ignoreCoroutine);
+            ignoreCoroutine = null;
+            RestoreAllCollisions();
+        }
 
-        ropeCollider = hit;
-        ropeCols.Clear();
-        hit.transform.GetComponentsInChildren(true, ropeCols);
+        activeRopeColliders.Add(hit);
+        
+        if (isClimbing) return; // Already climbing
+
+        // Get the root rope transform
+        currentRopeTransform = GetRopeRoot(hit.transform);
+        
+        // Collect all colliders from this rope system
+        allRopeCols.Clear();
+        currentRopeTransform.GetComponentsInChildren(true, allRopeCols);
 
         BeginClimb();
+    }
+
+    // Find the root rope transform (the one with RopeMaker/RopeMarker or tagged Rope)
+    Transform GetRopeRoot(Transform t)
+    {
+        Transform root = t;
+        Transform current = t;
+        
+        while (current != null)
+        {
+            if (current.CompareTag("Rope"))
+            {
+                root = current;
+            }
+            
+            var comps = current.GetComponents<Component>();
+            foreach (var c in comps)
+            {
+                var n = c.GetType().Name;
+                if (n == "RopeMaker" || n == "RopeMarker")
+                {
+                    root = current;
+                    break;
+                }
+            }
+            
+            current = current.parent;
+        }
+        
+        return root;
     }
 
     // Activates climbing state
@@ -95,11 +155,12 @@ public class PlayerRopeClimb : MonoBehaviour
     // Exit climbing state when leaving the rope trigger
     void OnTriggerExit(Collider other)
     {
-        if (!isClimbing || ropeCollider == null) return;
+        if (!LooksLikeRope(other.transform)) return;
+        
+        activeRopeColliders.Remove(other);
 
-        // BUG FIX: Only stop climbing if the specific collider that started the climb is exiting.
-        // This prevents premature stops when moving between segmented rope colliders.
-        if (other == ropeCollider)
+        // Only stop climbing if we've exited ALL rope colliders
+        if (isClimbing && activeRopeColliders.Count == 0)
         {
             StopClimb();
         }
@@ -109,8 +170,8 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (!isClimbing) return;
 
-        // Get Input and handle Detach (Input should be checked in Update)
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        // Cache input in Update
+        verticalInput = Input.GetAxisRaw("Vertical");
 
         // Set Animator speed based on movement
         if (anim)
@@ -120,31 +181,44 @@ public class PlayerRopeClimb : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StopClimb();
-            StartCoroutine(TemporarilyIgnoreRope(ignoreTime));
+            ignoreCoroutine = StartCoroutine(TemporarilyIgnoreRope(ignoreTime));
         }
     }
 
-
     void FixedUpdate()
     {
-        if (!isClimbing || ropeCollider == null) return;
+        if (!isClimbing || activeRopeColliders.Count == 0) return;
 
-        // BUG FIX: Movement is moved to FixedUpdate to synchronize with position snapping
-        // and prevent jitter when the Rigidbody is kinematic.
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        // Apply movement using cached input
         if (Mathf.Abs(verticalInput) > 0.01f)
-            transform.position += Vector3.up * (verticalInput * climbSpeed * Time.fixedDeltaTime); // Use fixedDeltaTime
+        {
+            transform.position += Vector3.up * (verticalInput * climbSpeed * Time.fixedDeltaTime);
+        }
 
-        // Snap X to rope collider centre, keep Y as is, lock Z
-        float centreX = ropeCollider.bounds.center.x;
-        Vector3 p = transform.position;
-        transform.position = new Vector3(centreX, p.y, lockedZ);
+        // Snap X to the center of any active rope collider (use the first one)
+        Collider snapTarget = null;
+        foreach (var col in activeRopeColliders)
+        {
+            if (col != null && col.enabled)
+            {
+                snapTarget = col;
+                break;
+            }
+        }
+
+        if (snapTarget != null)
+        {
+            float centreX = snapTarget.bounds.center.x;
+            Vector3 p = transform.position;
+            transform.position = new Vector3(centreX, p.y, lockedZ);
+        }
     }
 
     // Restores normal physics after climbing
     void StopClimb()
     {
         isClimbing = false;
+        activeRopeColliders.Clear();
 
         // Restore saved physics properties
         rb.isKinematic = savedIsKinematic;
@@ -157,7 +231,7 @@ public class PlayerRopeClimb : MonoBehaviour
             anim.speed = 1f;
         }
 
-        ropeCollider = null;
+        currentRopeTransform = null;
     }
 
     // Clears any residual velocity
@@ -176,23 +250,45 @@ public class PlayerRopeClimb : MonoBehaviour
     // Temporarily disables rope collisions after detaching
     IEnumerator TemporarilyIgnoreRope(float seconds)
     {
-        if (seconds <= 0f || ropeCols.Count == 0) yield break;
+        if (seconds <= 0f || allRopeCols.Count == 0) yield break;
 
         // Ignore collisions
         foreach (var pc in playerCols)
+        {
             if (pc && pc.enabled)
-                foreach (var rc in ropeCols)
+            {
+                foreach (var rc in allRopeCols)
+                {
                     if (rc && rc.enabled)
+                    {
                         Physics.IgnoreCollision(pc, rc, true);
+                    }
+                }
+            }
+        }
 
         yield return new WaitForSeconds(seconds);
 
         // Re-enable collisions
-        foreach (var pc in playerCols)
-            if (pc)
-                foreach (var rc in ropeCols)
-                    if (rc)
-                        Physics.IgnoreCollision(pc, rc, false);
+        RestoreAllCollisions();
+        
+        ignoreCoroutine = null;
     }
 
+    void RestoreAllCollisions()
+    {
+        foreach (var pc in playerCols)
+        {
+            if (pc)
+            {
+                foreach (var rc in allRopeCols)
+                {
+                    if (rc)
+                    {
+                        Physics.IgnoreCollision(pc, rc, false);
+                    }
+                }
+            }
+        }
+    }
 }
