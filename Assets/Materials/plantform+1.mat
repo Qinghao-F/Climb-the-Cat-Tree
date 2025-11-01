@@ -70,6 +70,7 @@ Material:
     - _BumpScale: 0.5
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DepthOffset: 0.002
     - _DetailNormalMapScale: 1
     - _DiffuseSteps: 4
     - _DstBlend: 0
@@ -85,6 +86,7 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineWidth: 6
     - _Parallax: 0.02
+    - _SaturationBoost: 0.6
     - _SmoothnessTextureChannel: 0
     - _SpecSteps: 2
     - _SpecularHighlights: 1
@@ -97,5 +99,6 @@ Material:
     - _Color: {r: 0.9019608, g: 0.54901963, b: 0.58431375, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColour: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
