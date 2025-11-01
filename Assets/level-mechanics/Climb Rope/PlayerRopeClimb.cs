@@ -13,10 +13,16 @@ public class PlayerRopeClimb : MonoBehaviour
     [Header("Climb")]
     [Tooltip("Vertical speed whilst attached.")]
     public float climbSpeed = 2.6f;
+    
+    [Tooltip("How far from rope center before auto-detaching (0 = never detach). Recommended: 0.3-0.5")]
+    public float autoDetachDistance = 0.3f;
+    
+    [Tooltip("Horizontal movement speed multiplier while climbing. 1.0 = same as climb speed")]
+    public float horizontalSpeedMultiplier = 2.0f;
 
     [Header("Detach")]
     [Tooltip("Seconds to ignore rope collisions after detaching.")]
-    public float ignoreTime = 0.25f;
+    public float ignoreTime = 0.5f;
 
     // Internal state
     Rigidbody rb;
@@ -27,6 +33,7 @@ public class PlayerRopeClimb : MonoBehaviour
     readonly HashSet<Collider> activeRopeColliders = new();
     Transform currentRopeTransform;   // Root transform of current rope
     float lockedZ;                    // Player's preserved Z position
+    float ropeCenter;                 // X position of rope center
 
     readonly List<Collider> playerCols = new();
     readonly List<Collider> allRopeCols = new();
@@ -39,6 +46,7 @@ public class PlayerRopeClimb : MonoBehaviour
 
     // Input caching
     private float verticalInput;
+    private float horizontalInput;
     
     // Collision ignore tracking
     private Coroutine ignoreCoroutine;
@@ -172,6 +180,7 @@ public class PlayerRopeClimb : MonoBehaviour
 
         // Cache input in Update
         verticalInput = Input.GetAxisRaw("Vertical");
+        horizontalInput = Input.GetAxisRaw("Horizontal");
 
         // Set Animator speed based on movement
         if (anim)
@@ -189,13 +198,7 @@ public class PlayerRopeClimb : MonoBehaviour
     {
         if (!isClimbing || activeRopeColliders.Count == 0) return;
 
-        // Apply movement using cached input
-        if (Mathf.Abs(verticalInput) > 0.01f)
-        {
-            transform.position += Vector3.up * (verticalInput * climbSpeed * Time.fixedDeltaTime);
-        }
-
-        // Snap X to the center of any active rope collider (use the first one)
+        // Get rope center
         Collider snapTarget = null;
         foreach (var col in activeRopeColliders)
         {
@@ -206,12 +209,40 @@ public class PlayerRopeClimb : MonoBehaviour
             }
         }
 
-        if (snapTarget != null)
+        if (snapTarget == null) return;
+
+        ropeCenter = snapTarget.bounds.center.x;
+
+        // Allow horizontal movement while climbing
+        Vector3 movement = Vector3.zero;
+        
+        if (Mathf.Abs(verticalInput) > 0.01f)
         {
-            float centreX = snapTarget.bounds.center.x;
-            Vector3 p = transform.position;
-            transform.position = new Vector3(centreX, p.y, lockedZ);
+            movement += Vector3.up * (verticalInput * climbSpeed * Time.fixedDeltaTime);
         }
+        
+        // Allow slight horizontal drift
+        if (Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            movement += Vector3.right * (horizontalInput * climbSpeed * horizontalSpeedMultiplier * Time.fixedDeltaTime);
+        }
+
+        transform.position += movement;
+
+        // Check distance from rope center - auto-detach if too far
+        float distanceFromRope = Mathf.Abs(transform.position.x - ropeCenter);
+        if (autoDetachDistance > 0f && distanceFromRope > autoDetachDistance)
+        {
+            StopClimb();
+            ignoreCoroutine = StartCoroutine(TemporarilyIgnoreRope(ignoreTime));
+            return;
+        }
+
+        // Gently pull toward rope center (not instant snap)
+        float pullStrength = 0.02f; // Very weak pull - easily overcome by player input
+        Vector3 p = transform.position;
+        float targetX = Mathf.Lerp(p.x, ropeCenter, pullStrength);
+        transform.position = new Vector3(targetX, p.y, lockedZ);
     }
 
     // Restores normal physics after climbing
