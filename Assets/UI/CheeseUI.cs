@@ -41,7 +41,7 @@ public class CheeseUI : MonoBehaviour
         // Initialize UI with current score
         if (PlayerInfo.Instance != null)
         {
-            UpdateCheese(PlayerInfo.Instance.GetCurrentScore());
+            UpdateCheese(PlayerInfo.Instance.GetScore());
         }
     }
 
