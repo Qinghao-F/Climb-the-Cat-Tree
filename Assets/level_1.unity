@@ -14620,8 +14620,8 @@ MonoBehaviour:
   - {fileID: 2136411964}
   - {fileID: 667169692}
   oneStarThreshold: 10
-  twoStarThreshold: 30
-  threeStarThreshold: 70
+  twoStarThreshold: 20
+  threeStarThreshold: 30
   emptyStarSprite: {fileID: 21300000, guid: 06689f1fbe5c9644a8cf9c45595e9e4d, type: 3}
   filledStarSprite: {fileID: 21300000, guid: fe2a9e73fa3b23047aca49a1c8bbb25e, type: 3}
 --- !u!1001 &1555614846
