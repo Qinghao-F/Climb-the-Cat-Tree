@@ -77,6 +77,7 @@ public class BreakingPlatform : MonoBehaviour
             {
                 if (contact.normal.y < -0.5f) // Player is on top!
                 {
+                    PlaySFXAt(breakSFX, transform.position);
                     StartCoroutine(BreakPlatform());
                     break;
                 }
@@ -86,9 +87,6 @@ public class BreakingPlatform : MonoBehaviour
 
     void Break()
     {
-        PlaySFXAt(breakSFX, transform.position);
-
-        // can do sound here
         if (meshRenderer != null)
         {
             meshRenderer.enabled = false; // hide platform

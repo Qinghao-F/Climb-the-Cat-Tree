@@ -1242,6 +1242,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1401,9 +1405,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -2146,6 +2150,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -2833,6 +2841,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.63
@@ -3563,7 +3575,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YOU WIN !
+  m_text: YOU WIN!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4575,9 +4587,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -5143,6 +5155,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -5234,6 +5250,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -5592,9 +5612,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -5801,6 +5821,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -6160,11 +6184,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.96
+      value: -1.78
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 190.4
+      value: 189.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 47850ad9b90da4dfc80378f76ee2d8e5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8648,6 +8672,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -8846,9 +8874,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -8981,9 +9009,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -10766,6 +10794,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -11266,8 +11298,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 353, y: 188}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 339.3, y: 188}
+  m_SizeDelta: {x: 87.5, y: 37.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1097411023
 MonoBehaviour:
@@ -11357,7 +11389,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3bfe135e2d7f44776a4f14096bfea8b6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: aa7227741830e44bd97924b43cbe9a27, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12679,6 +12711,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -13908,6 +13944,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -16335,6 +16375,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -16594,7 +16638,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: X
+  m_text: CLOSE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16621,8 +16665,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -16761,6 +16805,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -17591,9 +17639,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -17638,9 +17686,9 @@ MonoBehaviour:
   breakDelay: 2
   respawnTime: 3
   respawns: 1
-  shakeIntensity: 0.2
+  shakeIntensity: 0.5
   shakes: 1
-  breakSFX: {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  breakSFX: {fileID: 8300000, guid: 6567cad3ff0cd2b4cb74c592fff0903d, type: 3}
   sfxVolume: 1
   use2DSound: 1
   pitchRandom: {x: 0.98, y: 1.02}
@@ -17683,6 +17731,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -18695,6 +18747,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -18804,6 +18860,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -19413,6 +19473,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 383253013}
     m_Modifications:
+    - target: {fileID: -7892095038721734466, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
+      propertyPath: jumpPadSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 404db74c36e55de4487a10c121647df3, type: 3}
     - target: {fileID: 3730443645817000468, guid: a8f54703561f14dcba4a47ebbf1f34ec, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -20212,7 +20276,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 510112593150837357, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 510112593150837357, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -20332,7 +20396,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Size.x
-      value: 4.1
+      value: 3.5463607
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Size.y
@@ -20340,7 +20404,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Size.z
-      value: 6.1801085
+      value: 5.7138762
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Enabled
@@ -20348,15 +20412,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Center.x
-      value: 0.12276185
+      value: 0.103438385
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Center.y
-      value: 0.42
+      value: 0.4200001
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_Center.z
-      value: -0.014945984
+      value: -0.24806225
       objectReference: {fileID: 0}
     - target: {fileID: 8454231669338270205, guid: e66efd1533175a1409a850922d689fe3, type: 3}
       propertyPath: m_IsTrigger
