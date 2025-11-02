@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
-//using UnityEngine.SceneManagement; // reload scene
+using UnityEngine.SceneManagement;
 
 public class PlayerInfo : MonoBehaviour
 {
     private Animator anim;
-    private Rigidbody2D rb;
-    private Collider2D[] colliders;
+    private Rigidbody rb; 
+    private Collider[] colliders;
 
     // Singleton instance
     public static PlayerInfo Instance;
@@ -21,8 +21,8 @@ public class PlayerInfo : MonoBehaviour
     private bool isInvincible = false;
 
     [Header("Death Settings")]
-    [Tooltip("Delay before death callback/GameOver to let the death animation play")]
-    [SerializeField] private float deathDelay = 0.1f;
+    [Tooltip("Delay before scene reloads to let the death animation play")]
+    [SerializeField] private float deathDelay = 2f;
     private bool isDead = false;
 
     [Header("Score Settings")]
@@ -61,8 +61,8 @@ public class PlayerInfo : MonoBehaviour
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-        colliders = GetComponentsInChildren<Collider2D>(true);
+        rb = GetComponent<Rigidbody>();  // Changed to 3D
+        colliders = GetComponentsInChildren<Collider>(true);  // Changed to 3D
 
         // Singleton
         if (Instance == null)
@@ -159,26 +159,32 @@ public class PlayerInfo : MonoBehaviour
         
         Debug.Log("Player died");
 
-        //OnDeath?.Invoke();
+        // Invoke death event immediately (for UI updates, etc.)
+        OnDeath?.Invoke();
 
         if (anim)
         {
             // drive Animator conditions to force death transition from any state
-            anim.SetBool("isDead", true); // Pair this with Animator transitions (isDead == true)
+            anim.SetBool("isDead", true);
             anim.ResetTrigger("Hurt");
             anim.SetBool("Walking", false);
             anim.SetBool("Jumping", false);
             anim.SetBool("isClimbing", false);
-            anim.SetTrigger("death"); // Trigger the death animation
+            anim.SetTrigger("death");
         }
 
         if (rb)
         {
             // freeze rigidbody motion to avoid sliding/physics after death
-            rb.linearVelocity = Vector2.zero;
-            rb.angularVelocity = 0f;
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+#if UNITY_6000_0_OR_NEWER
+            rb.linearVelocity = Vector3.zero;
+#else
+            rb.velocity = Vector3.zero;
+#endif
+            rb.angularVelocity = Vector3.zero;
+            rb.constraints = RigidbodyConstraints.FreezeAll;
         }
+        
         // disable colliders to avoid further interactions after death
         if (colliders != null)
         {
@@ -188,20 +194,17 @@ public class PlayerInfo : MonoBehaviour
         // DEATH SOUND
         PlayDeathSound();
 
-        //StartCoroutine(DeathCallbackAfterDelay());
+        // Reload scene after delay
+        StartCoroutine(ReloadSceneAfterDelay());
     }
 
-    private IEnumerator DeathCallbackAfterDelay()
+    private IEnumerator ReloadSceneAfterDelay()
     {
         yield return new WaitForSeconds(deathDelay);
-        OnDeath?.Invoke();
+        
+        Debug.Log("Reloading scene...");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
-    // private void Restart() // reload scene
-    // {
-    //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    // }
-
 
     // Helper methods
     public int GetCurrentHealth() => currentHealth;
