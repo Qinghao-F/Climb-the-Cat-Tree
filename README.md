@@ -396,10 +396,13 @@ The movement style is designed to feel more deliberate and weighty. This outcome
 ### 5\. Art and Audio
 
 This work employs a **non-photorealistic rendering (NPR)** technique to achieve a **cel-shaded** cartoon aesthetic. Utilising outlines and segmented lighting, it presents **low-poly, hand-drawn scenes and characters**.(Inspired by LoZ: WindWaker)
+
 ![](images/GDD/40.png)
 
 The game environment (the cat tree) is built from **basic geometric** forms blocks, cylinders, and spheres arranged in a modular, building-block fashion reminiscent of frames in classic arcade games. The spatial presentation adopts a 2.5D perspective with bright, vibrant, saturated colours, reminiscent of Paper Mario. The animation and 2D art style is cartoony, reminiscent of early 2000s cartoons with bold outlines and colours. This use of colour and styles is fun and punchy but also serves to better separate the layers of the background enhancing visual clarity. 
-![](images/GDD/41.png) ![](images/GDD/42.png)
+![](images/GDD/41.png) 
+
+![](images/GDD/42.png)
 
 #### 5.1 Background Music：
 
