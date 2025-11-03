@@ -2,15 +2,15 @@
 # Climb the Cat Tree
 
 #### Table of Contents
-[1. Game Overview](#1-game-overview)
-[2. Story and Narrative](#2-story-and-narrative)
-[3. Gameplay and Mechanics](#3-gameplay-and-mechanics)
-[4. Levels and World Design](#4-levels-and-world-design)
-[5. Art and Audio](#5-art-and-audio)
-[6. User Interface](#6-user-interface-ui)
-[7. Technology and Tools](#7-technology-and-tools)
-[8. Basic Pipeline](#8-basic-pipeline)
-[9. Features List](#9-features-list)
+1. [Game Overview](#1-game-overview)
+2. [Story and Narrative](#2-story-and-narrative)
+3. [Gameplay and Mechanics](#3-gameplay-and-mechanics)
+4. [Levels and World Design](#4-levels-and-world-design)
+5. [Art and Audio](#5-art-and-audio)
+6. [User Interface](#6-user-interface-ui)
+7. [Technology and Tools](#7-technology-and-tools)
+8. [Basic Pipeline](#8-basic-pipeline)
+9. [Features List](#9-features-list)
 
 
 ### 1\. Game Overview
