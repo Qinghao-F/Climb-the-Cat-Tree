@@ -2,13 +2,13 @@
 
 #### Table of Contents
 
-* [Evaluation Plan](#evaluation-plan)  
-* [Evaluation Report](#evaluation-report)  
-* [Shaders and Special Effects](#shaders-and-special-effects)  
+* [Evaluation Plan](#evaluation-plan)
+* [Evaluation Report](#evaluation-report)
+* [Shaders and Special Effects](#shaders-and-special-effects)
 * [Summary of Contributions](#summary-of-contributions)  
 * [References and External Resources](#references-and-external-resources)
 
-## Evaluation Plan {#evaluation-plan}
+## Evaluation Plan
 
 ### 1. Introduction
 
@@ -103,7 +103,7 @@ For both methods, we employed identical criteria to select participants. Each pa
 | 02/11/2025 | All Team Members: Make changes to the game based on the results |
 
 #
-## Evaluation Report {#evaluation-report}
+## Evaluation Report
 
 ### 1. Results
 
@@ -116,7 +116,7 @@ Severity is ranked based on their probability and impact.
 | Issue \# | Tasks(1-4) | Participants | Issue Description | Screenshot | Severity/5 |
 | ----- | ----- | ----- | ----- | ----- | ----- |
 | 1 | 2, 3 | A, B, C, E | When climbing ropes, the player's left and right directions may occasionally become confused | ![](images/Report/2.png) | 4 |
-| 2 | 2, 3 | A | The speed of climbing the rope is too slow | ![](images/Report/3.png) | 2 |
+| 2 | 2, 3 | A | The speed of climbing the rope is too slow | ![](images/Report/3.gif) | 2 |
 | 3 | 1 | A, C | No background music at the start scene |  | 1 |
 | 4 | 1, 2, 3, 4 | C | The cheese is not obvious | ![](images/Report/4.png) | 2 |
 | 5 | 1, 2, 3, 4 | A, B, E | Players often get stuck at the start due to X-axis interaction issues | ![](images/Report/5.png) | 5 |
@@ -153,7 +153,7 @@ Table 4\. Summary of findings
 
 | Issue \# | How to improved | Screenshot |
 | ----- | ----- | ----- |
-| **1, 2** | Adjust the speed and replace the animation | ![](images/Report/9.png) |
+| **1, 2** | Adjust the speed and replace the animation | ![](images/Report/9.gif) |
 | **3** | Music was added to intro screen |  |
 | **4, 6, 7** | Double the size of cheese pickups | ![](images/Report/10.png) |
 | **5** | Made the player hitbox smaller |  |
@@ -177,7 +177,7 @@ Table 4\. Summary of findings
 
    
 #
-## Shaders and Special Effects {#shaders-and-special-effects}
+## Shaders and Special Effects
 
 This section showcases two custom shaders and a particle effects system developed for Climb the Cat Tree. All implementations are based on Unity's Vertex–Fragment Rendering Pipeline, using GPU-led per-pixel lighting and effects rendering to enhance the game's expressiveness while reducing CPU computational load. These visual solutions embody the approach of using rendering logic to support the game's narrative, making lighting, colour, and performance mechanisms as integral elements of the narrative language.
 
@@ -240,6 +240,8 @@ Thus, ToonPhongWithOutline establishes the game's signature visual system of ‘
 
 * File path: `/Assets/Shaders/WaveShader.shader`
 
+![](images/Report/16.gif) 
+Vs
 ![](images/Report/16.png)
 
 Purpose: Simulates the fluttering of a flag in the wind. By applying sinusoidal displacement during the vertex stage and overlaying an ‘amplitude decay towards the flagpole side’, the effect of ‘greater stability near the flagpole and increased oscillation at the far end’ is achieved.
@@ -331,7 +333,7 @@ This mechanism ensures automatic resource reclamation, preventing residual objec
 This effect embodies the design concept that visual response constitutes an interactive language. Through vibrant colours and spatial motion, it heightens the satisfaction of collection actions while enabling players to quickly determine successful collection.
 
 #
-## Summary of Contributions {#summary-of-contributions}
+## Summary of Contributions
 
 | Name | Contributions |
 | :---- | :---- |
@@ -341,7 +343,7 @@ This effect embodies the design concept that visual response constitutes an inte
 | Emily | - Hosting user testing web builds ([Github Page here](https://emiwooo.github.io/comp30019-user-testing/)) <br> - Debugging Github repository setup and help <br> - User testing (PTW) <br> - Player points and health logic ([PlayerInfo.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/level-mechanics/PlayerInfo.cs)) <br> - Rising cat head at bottom of level ([RisingCat](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/tree/main/Assets/level-mechanics/RisingCat))<br> -  Breaking and moving platforms ([MovingPlatform.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/level-mechanics/MovingPlatform.cs), [BreakingPlatform.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/level-mechanics/BreakingPlatform.cs)) <br> - Collectible cheese ([Collectible.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/level-mechanics/Collectible.cs)) <br> - Swiping cat paw ([CatPawSwipe.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/level-mechanics/CatPawSwipe.cs)) <br> - Event-driven rehauls to UI logic ([HealthUI.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/UI/HealthUI.cs), [CheeseUI.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/UI/CheeseUI.cs)) <br> - End star display for number of points player received ([WinPanelManager.cs](https://github.com/feit-comp30019/2025s2-project-2-fox-fish/blob/main/Assets/UI/WinPanelManager.cs)) <br> - UI implementation and minor UI assets  <br> - Converting documents to .md for submission <br> - Updating GDD and Report <br> - Jira board setup |
 
 #
-## References and External Resources {#references-and-external-resources}
+## References and External Resources 
 
 FAIR Consulting Group. (2021). *Using System Usability Scale and Post-Task Walkthrough to Test Usability and Functionality of Systems*. Available at: [https://faircg.com/code-stories/using-system-usability-scale-and-post-task-walkthrough-to-test-usability-and-functionality-of-systems/\#elementor-toc\_\_heading-anchor-5](https://faircg.com/code-stories/using-system-usability-scale-and-post-task-walkthrough-to-test-usability-and-functionality-of-systems/#elementor-toc__heading-anchor-5).
 
@@ -438,7 +440,7 @@ Important Notes: Respect and protect the privacy of interviewees. Request permis
 
 7\. In which scenarios would providing a prompt or secondary confirmation prove most beneficial?
 
-## Recognition Rather than Recall
+**Recognition Rather than Recall**
 
 8\. Are the prompts during operation enough? Are there moments when one must rely on memory?  
 - At which point were prompts most needed? What kind of prompts were required?
