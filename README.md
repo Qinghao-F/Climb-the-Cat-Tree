@@ -1,8 +1,6 @@
-🎮 **Play the game:** [Climb the Cat Tree](https://qinghao-f.github.io/Climb-the-Cat-Tree/)
-
 ## Game Design Document (GDD)
 # Climb the Cat Tree
-
+🎮 **Play the game:** [Climb the Cat Tree](https://qinghao-f.github.io/Climb-the-Cat-Tree/)
 #### Table of Contents
 1. [Game Overview](#1-game-overview)
 2. [Story and Narrative](#2-story-and-narrative)
